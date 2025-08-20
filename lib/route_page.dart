@@ -11,7 +11,6 @@ class RoutePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final route = bestRoute(Get.arguments[0], Get.arguments[1]);
-    print(route.length);
 
     return Scaffold(
       appBar: AppBar(
