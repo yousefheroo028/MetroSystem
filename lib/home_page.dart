@@ -25,9 +25,11 @@ class _HomePageState extends State<HomePage> {
 
   final _targetedAddressController = TextEditingController();
 
+  final _controller = Get.put(HomeController());
   @override
   void dispose() {
     _fromController.dispose();
+    _controller.dispose();
     _toController.dispose();
     _targetedAddressController.dispose();
     super.dispose();
@@ -35,9 +37,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
-    final stationsList =
-        stations.toSet().toList().map((station) => DropdownMenuEntry(value: station, label: station.name)).toList();
+    final stationsList = stations
+        .map((station) => station.name)
+        .toSet()
+        .map((station) => DropdownMenuEntry(value: station, label: station))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -62,8 +66,8 @@ class _HomePageState extends State<HomePage> {
                       enableFilter: true,
                       requestFocusOnTap: true,
                       onSelected: (value) {
-                        _fromController.text = value!.name;
-                        controller.fromIsEntered.value = true;
+                        _fromController.text = value!;
+                        _controller.fromIsEntered.value = true;
                       },
                       inputDecorationTheme: InputDecorationTheme(
                         border: OutlineInputBorder(
@@ -76,32 +80,32 @@ class _HomePageState extends State<HomePage> {
                     () => Row(
                       children: [
                         IconButton(
-                          onPressed: controller.isFound.value
+                          onPressed: _controller.isFound.value
                               ? null
                               : () async {
-                                  controller.isFound.value = true;
+                                  _controller.isFound.value = true;
                                   try {
-                                    controller.nearestStation = await _findNearestStation();
-                                    _fromController.text = controller.nearestStation!.name;
+                                    _controller.nearestStation = await _findNearestStation();
+                                    _fromController.text = _controller.nearestStation!.name;
                                   } catch (e) {
                                     Get.snackbar('Open Location', 'We need Location Permissions to find Nearest Station to you.');
                                   }
-                                  controller.isFound.value = false;
-                                  controller.fromIsEntered.value = _fromController.text.isNotEmpty;
+                                  _controller.isFound.value = false;
+                                  _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
                                 },
-                          icon: controller.isFound.value
+                          icon: _controller.isFound.value
                               ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
                               : const Icon(Icons.location_on_outlined),
                         ),
                         IconButton(
-                          onPressed: !controller.fromIsEntered.value
+                          onPressed: !_controller.fromIsEntered.value
                               ? null
                               : () async {
                                   await launchUrl(
                                     Uri(
                                       scheme: 'google.navigation',
                                       queryParameters: {
-                                        'q': '${controller.nearestStation!.latitude}, ${controller.nearestStation!.longitude}'
+                                        'q': '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
                                       },
                                     ),
                                   );
@@ -124,8 +128,8 @@ class _HomePageState extends State<HomePage> {
                 enableFilter: true,
                 requestFocusOnTap: true,
                 onSelected: (value) {
-                  _toController.text = value!.name;
-                  controller.toIsEntered.value = true;
+                  _toController.text = value!;
+                  _controller.toIsEntered.value = true;
                 },
                 inputDecorationTheme: InputDecorationTheme(
                   border: OutlineInputBorder(
@@ -136,7 +140,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 10),
               Obx(
                 () => ElevatedButton(
-                  onPressed: controller.fromIsEntered.value && controller.toIsEntered.value
+                  onPressed: _controller.fromIsEntered.value && _controller.toIsEntered.value
                       ? () => Get.to(
                             () => RoutePage(),
                             arguments: [_fromController.text, _toController.text],
@@ -161,25 +165,25 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onChanged: (value) {
                         _targetedAddressController.text = value;
-                        controller.targetedIsEntered.value = _targetedAddressController.text.isNotEmpty;
+                        _controller.targetedIsEntered.value = _targetedAddressController.text.isNotEmpty;
                       },
                     ),
                   ),
                   Row(
                     children: [
                       IconButton(
-                        onPressed: controller.targetedIsEntered.value
+                        onPressed: _controller.targetedIsEntered.value
                             ? () async {
                                 final locations = await locationFromAddress(_targetedAddressController.text);
                                 final targetedAddress = calculatenearestStation(locations[0]);
                                 _toController.text = targetedAddress.name;
-                                controller.toIsEntered.value = _toController.text.isNotEmpty;
+                                _controller.toIsEntered.value = _toController.text.isNotEmpty;
                               }
                             : null,
                         icon: const Icon(Icons.location_searching_sharp),
                       ),
                       IconButton(
-                        onPressed: !controller.targetedIsEntered.value
+                        onPressed: !_controller.targetedIsEntered.value
                             ? null
                             : () async {
                                 final locations = await locationFromAddress(_targetedAddressController.text);
