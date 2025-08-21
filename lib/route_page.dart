@@ -14,16 +14,18 @@ class RoutePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('The Route', style: TextStyle(fontSize: 20)),
+        title: const Text('The Route', style: TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView.builder(
-            physics: BouncingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemCount: route.length,
             itemBuilder: (_, index) => LineCard(
-                route: route[index], lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber),
+              route: route[index],
+              lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
+            ),
           ),
         ),
       ),
@@ -113,34 +115,70 @@ class LineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return route.isNotEmpty
-        ? Column(
+    return Column(
+      children: [
+        Text(
+          'Line ${lineNumber + 1}',
+          style: const TextStyle(fontSize: 20),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+            color: lineNumber == 0
+                ? Colors.blue.shade900
+                : lineNumber == 1
+                    ? Colors.red.shade900
+                    : Colors.green.shade900,
+          ),
+          padding: const EdgeInsets.all(16.0),
+          width: context.width,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Line ${lineNumber + 1}',
-                style: TextStyle(fontSize: 20),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  color: Colors.indigo,
-                ),
-                padding: EdgeInsets.all(16.0),
-                width: context.width,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: route
-                      .map((station) => Text(
-                            '$station \u2022',
-                            textAlign: TextAlign.right,
-                            style: const TextStyle(fontSize: 20),
-                          ))
-                      .toList(),
-                ),
-              ),
+              lineNumber == 0
+                  ? const Icon(Icons.looks_one_outlined)
+                  : lineNumber == 1
+                      ? const Icon(Icons.looks_two_outlined)
+                      : const Icon(Icons.looks_3_outlined),
+              route.length > 2
+                  ? Expanded(
+                      child: ExpansionTile(
+                        title: Text(
+                          'من: ${route.first}\nإلى: ${route.last}',
+                          textAlign: TextAlign.end,
+                        ),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        children: route
+                            .map(
+                              (station) => SizedBox(
+                                width: context.width,
+                                child: Text(
+                                  '$station \u2022',
+                                  textAlign: TextAlign.end,
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: route
+                          .map(
+                            (station) => Text(
+                              '$station \u2022',
+                              textAlign: TextAlign.right,
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          )
+                          .toList(),
+                    )
             ],
-          )
-        : SizedBox.shrink();
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -24,19 +24,18 @@ class _HomePageState extends State<HomePage> {
   final _toController = TextEditingController();
 
   final _targetedAddressController = TextEditingController();
-  final controller = Get.put(HomeController());
 
   @override
   void dispose() {
     _fromController.dispose();
     _toController.dispose();
     _targetedAddressController.dispose();
-    controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(HomeController());
     final stationsList =
         stations.toSet().toList().map((station) => DropdownMenuEntry(value: station, label: station.name)).toList();
 
@@ -77,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                     () => Row(
                       children: [
                         IconButton(
-                          onPressed: controller.fromIsEntered.value
+                          onPressed: controller.isFound.value
                               ? null
                               : () async {
                                   controller.isFound.value = true;
@@ -126,6 +125,7 @@ class _HomePageState extends State<HomePage> {
                 requestFocusOnTap: true,
                 onSelected: (value) {
                   _toController.text = value!.name;
+                  controller.toIsEntered.value = true;
                 },
                 inputDecorationTheme: InputDecorationTheme(
                   border: OutlineInputBorder(
@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                             transition: Transition.cupertino,
                           )
                       : null,
-                  child: const Text('Find Route'),
+                  child: Text('Find Route (${controller.fromIsEntered.value} - ${controller.toIsEntered.value})'),
                 ),
               ),
               const SizedBox(height: 100),
