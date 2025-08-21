@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
                             transition: Transition.cupertino,
                           )
                       : null,
-                  child: Text('Find Route (${controller.fromIsEntered.value} - ${controller.toIsEntered.value})'),
+                  child: const Text('Find Route'),
                 ),
               ),
               const SizedBox(height: 100),
