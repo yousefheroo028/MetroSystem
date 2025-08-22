@@ -1,8 +1,10 @@
+import 'package:get/get.dart';
+
 import 'locales.dart';
 import 'station.dart';
 
-final stations = <Station>[
-  Station(name: LocalizationService.local.elMonib, lineNumber: 1, latitude: 29.981153305051627, longitude: 31.2123248464122),
+var stations = <Station>[
+  Station(name: LocalizationService.local.elMonib.tr, lineNumber: 1, latitude: 29.981153305051627, longitude: 31.2123248464122),
   Station(name: LocalizationService.local.sakiatMekki, lineNumber: 1, latitude: 29.995472092704674, longitude: 31.20845957851606),
   Station(
       name: LocalizationService.local.omElMasryeen, lineNumber: 1, latitude: 30.006991782739266, longitude: 31.208721013595845),
