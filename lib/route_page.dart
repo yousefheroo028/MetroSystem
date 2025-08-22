@@ -3,18 +3,32 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:metro_system/coordinates.dart';
 
-class RoutePage extends StatelessWidget {
+import 'locales.dart' show LocalizationService;
+
+class RoutePage extends StatefulWidget {
   RoutePage({super.key});
 
+  @override
+  State<RoutePage> createState() => _RoutePageState();
+}
+
+class _RoutePageState extends State<RoutePage> {
   final net = GetStorage();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LocalizationService.init(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var locale = LocalizationService.local;
     final route = bestRoute(Get.arguments[0], Get.arguments[1]);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('The Route', style: TextStyle(fontSize: 20)),
+        title: Text(locale.appTitle, style: TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: Padding(
@@ -115,10 +129,11 @@ class LineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var locale = LocalizationService.local;
     return Column(
       children: [
         Text(
-          'Line ${lineNumber + 1}',
+          '${locale.line} ${lineNumber + 1}',
           style: const TextStyle(fontSize: 20),
         ),
         Container(
@@ -144,7 +159,7 @@ class LineCard extends StatelessWidget {
                   ? Expanded(
                       child: ExpansionTile(
                         title: Text(
-                          'من: ${route.first}\nإلى: ${route.last}',
+                          '${locale.from}: ${route.first}\n${locale.to}: ${route.last}',
                           textAlign: TextAlign.end,
                         ),
                         controlAffinity: ListTileControlAffinity.leading,

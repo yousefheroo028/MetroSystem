@@ -122,6 +122,18 @@ abstract class AppLocalizations {
   /// **'El Monib'**
   String get elMonib;
 
+  /// No description provided for @from.
+  ///
+  /// In en, this message translates to:
+  /// **'from'**
+  String get from;
+
+  /// No description provided for @to.
+  ///
+  /// In en, this message translates to:
+  /// **'to'**
+  String get to;
+
   /// No description provided for @sakiatMekki.
   ///
   /// In en, this message translates to:

@@ -21,6 +21,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get elMonib => 'المنيب';
 
   @override
+  String get from => 'من';
+
+  @override
+  String get to => 'إلى';
+
+  @override
   String get sakiatMekki => 'ساقية مكي';
 
   @override

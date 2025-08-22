@@ -228,7 +228,7 @@ class HomeController extends GetxController {
 }
 
 Future<Station> _findNearestStation(BuildContext context) async {
-  final locale = AppLocalizations.of(context)!;
+  var locale = AppLocalizations.of(context)!;
   bool serviceEnabled;
   LocationPermission permission;
 
