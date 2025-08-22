@@ -56,6 +56,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(locale.appTitle, style: TextStyle(fontSize: 20)),
+        leading: IconButton(
+          onPressed: () {
+            if (Get.locale?.languageCode == 'ar') {
+              Get.updateLocale(const Locale('en'));
+            } else {
+              Get.updateLocale(const Locale('ar'));
+            }
+          },
+          icon: const Icon(Icons.language),
+        ),
       ),
       body: Center(
         child: ConstrainedBox(
