@@ -11,6 +11,8 @@ import 'package:metro_system/route_page.dart';
 import 'package:metro_system/station.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'locales.dart' show LocalizationService;
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -26,6 +28,13 @@ class _HomePageState extends State<HomePage> {
   final _targetedAddressController = TextEditingController();
 
   final _controller = Get.put(HomeController());
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LocalizationService.init(context);
+  }
+
   @override
   void dispose() {
     _fromController.dispose();
@@ -37,6 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var locale = LocalizationService.local;
     final stationsList = stations
         .map((station) => station.name)
         .toSet()
@@ -45,7 +55,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.appTitle, style: TextStyle(fontSize: 20)),
+        title: Text(locale.appTitle, style: TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: ConstrainedBox(
@@ -58,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: DropdownMenu(
                       width: context.width,
-                      hintText: 'Current Station',
+                      hintText: locale.currentStation,
                       menuHeight: 300.0,
                       dropdownMenuEntries: stationsList,
                       controller: _fromController,
@@ -85,10 +95,10 @@ class _HomePageState extends State<HomePage> {
                               : () async {
                                   _controller.isFound.value = true;
                                   try {
-                                    _controller.nearestStation = await _findNearestStation();
+                                    _controller.nearestStation = await _findNearestStation(context);
                                     _fromController.text = _controller.nearestStation!.name;
                                   } catch (e) {
-                                    Get.snackbar('Open Location', 'We need Location Permissions to find Nearest Station to you.');
+                                    Get.snackbar(locale.openLocation, locale.needLocationPermission);
                                   }
                                   _controller.isFound.value = false;
                                   _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
@@ -119,7 +129,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 10),
               DropdownMenu(
-                hintText: 'Targeted Station',
+                hintText: locale.targetedStation,
                 width: context.width,
                 menuHeight: 300.0,
                 dropdownMenuEntries: stationsList,
@@ -147,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                             transition: Transition.cupertino,
                           )
                       : null,
-                  child: const Text('Find Route'),
+                  child: Text(locale.findRoute),
                 ),
               ),
               const SizedBox(height: 100),
@@ -157,11 +167,11 @@ class _HomePageState extends State<HomePage> {
                     child: TextField(
                       controller: _targetedAddressController,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(8.0),
+                        contentPadding: const EdgeInsets.all(8.0),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        hintText: 'Address you want to Go',
+                        hintText: locale.addressHint,
                       ),
                       onChanged: (value) {
                         _targetedAddressController.text = value;
@@ -217,27 +227,27 @@ class HomeController extends GetxController {
   Station? nearestStation;
 }
 
-Future<Station> _findNearestStation() async {
+Future<Station> _findNearestStation(BuildContext context) async {
+  final locale = AppLocalizations.of(context)!;
   bool serviceEnabled;
   LocationPermission permission;
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    return Future.error('The location service on the device is disabled.');
+    return Future.error(locale.locationDisabled);
   }
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      Get.snackbar('You can\'t Use this App',
-          'You Should Open Location to determine your current location to find the nearest metro station ');
-      return Future.error('Location permissions are denied');
+      Get.snackbar(locale.locationDeniedTitle, locale.locationDeniedMessage);
+      return Future.error(locale.permissionsDisabled);
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    return Future.error('Location permissions are permanently denied, we cannot request permissions.');
+    return Future.error(locale.permanentlyDenied);
   }
 
   if (!serviceEnabled) {}
