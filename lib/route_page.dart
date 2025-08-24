@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:metro_system/coordinates.dart';
-
-import 'locales.dart' show LocalizationService;
+import 'package:metro_system/coordinates_ar.dart' as ar_list;
+import 'package:metro_system/coordinates_en.dart' as en_list;
 
 class RoutePage extends StatefulWidget {
-  RoutePage({super.key});
+  const RoutePage({super.key});
 
   @override
   State<RoutePage> createState() => _RoutePageState();
@@ -15,20 +14,14 @@ class RoutePage extends StatefulWidget {
 class _RoutePageState extends State<RoutePage> {
   final net = GetStorage();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    LocalizationService.init(context);
-  }
-
+  final stations = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations);
   @override
   Widget build(BuildContext context) {
-    var locale = LocalizationService.local;
     final route = bestRoute(Get.arguments[0], Get.arguments[1]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.appTitle, style: TextStyle(fontSize: 20)),
+        title: Text('appTitle'.tr, style: TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: Padding(
@@ -47,36 +40,29 @@ class _RoutePageState extends State<RoutePage> {
   }
 
   List<List<String>> bestRoute(String currentStation, String targetedStation) {
-    var network = net.read('network');
-    if (network == null) {
-      final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
+    final Map<String, List<String>> network = {};
+    final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
 
-      final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
+    final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
 
-      final adlyMansourBranch1 =
-          stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+    final adlyMansourBranch1 =
+        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
 
-      final adlyMansourBranch2 =
-          stations.where((station) => station.lineNumber == 2 && (station.branch == 2 || station.branch == null)).toList();
-      final lines = [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2];
-      final Map<String, List<String>> network = {};
-      for (final line in lines) {
-        for (int i = 0; i < line.length - 1; i++) {
-          network.putIfAbsent(line[i].name, () => []);
-          network.putIfAbsent(line[i + 1].name, () => []);
-          network[line[i].name]!.add(line[i + 1].name);
-          network[line[i + 1].name]!.add(line[i].name);
-        }
+    final adlyMansourBranch2 =
+        stations.where((station) => station.lineNumber == 2 && (station.branch == 2 || station.branch == null)).toList();
+    for (final line in [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2]) {
+      for (int i = 0; i < line.length - 1; i++) {
+        network.putIfAbsent(line[i].name, () => []);
+        network.putIfAbsent(line[i + 1].name, () => []);
+        network[line[i].name]!.add(line[i + 1].name);
+        network[line[i + 1].name]!.add(line[i].name);
       }
-      net.write('network', network);
     }
-    network = net.read('network');
 
     Map<String, int> steps = {};
     Map<String, String?> previous = {};
     Set<String> visited = {};
 
-    // initialize steps
     for (final station in network.keys) {
       steps[station] = 1000;
       previous[station] = null;
@@ -129,11 +115,10 @@ class LineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var locale = LocalizationService.local;
     return Column(
       children: [
         Text(
-          '${locale.line} ${lineNumber + 1}',
+          '${'line'.tr} ${lineNumber + 1}',
           style: const TextStyle(fontSize: 20),
         ),
         Container(
@@ -158,19 +143,17 @@ class LineCard extends StatelessWidget {
               route.length > 2
                   ? Expanded(
                       child: ExpansionTile(
-                        title: Text(
-                          '${locale.from}: ${route.first}\n${locale.to}: ${route.last}',
-                          textAlign: TextAlign.end,
-                        ),
-                        controlAffinity: ListTileControlAffinity.leading,
+                        title: Text('${'from'.tr}: ${route.first}\n${'to'.tr}: ${route.last}'),
                         children: route
                             .map(
                               (station) => SizedBox(
                                 width: context.width,
-                                child: Text(
-                                  '$station \u2022',
-                                  textAlign: TextAlign.end,
-                                  style: const TextStyle(fontSize: 20),
+                                child: ListTile(
+                                  title: Text(station),
+                                  leading: const Text(
+                                    '\u2022',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
                                 ),
                               ),
                             )

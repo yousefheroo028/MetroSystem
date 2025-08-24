@@ -5,13 +5,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:metro_system/coordinates.dart';
-import 'package:metro_system/l10n/app_localizations.dart';
+import 'package:metro_system/coordinates_ar.dart' as ar_list;
+import 'package:metro_system/coordinates_en.dart' as en_list;
 import 'package:metro_system/route_page.dart';
 import 'package:metro_system/station.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'locales.dart' show LocalizationService;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,12 +28,6 @@ class _HomePageState extends State<HomePage> {
   final _controller = Get.put(HomeController());
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    LocalizationService.init(context);
-  }
-
-  @override
   void dispose() {
     _fromController.dispose();
     _controller.dispose();
@@ -46,30 +38,35 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var locale = LocalizationService.local;
-    final stationsList = stations
-        .map((station) => station.name)
+    final stationsList = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations)
         .toSet()
-        .map((station) => DropdownMenuEntry(value: station, label: station))
+        .map((station) => DropdownMenuEntry(value: station.name, label: station.name))
         .toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(locale.appTitle, style: TextStyle(fontSize: 20)),
+        title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
         leading: IconButton(
-          onPressed: () {
-            if (Get.locale?.languageCode == 'ar') {
-              Get.updateLocale(const Locale('en'));
+          onPressed: () async {
+            final arabicNamesOfStations = ar_list.stations.map((station) => station.name).toSet().toList();
+            final englishNamesOfStations = en_list.stations.map((station) => station.name).toSet().toList();
+            (Get.locale?.languageCode == 'ar')
+                ? await Get.updateLocale(const Locale('en', 'US'))
+                : await Get.updateLocale(const Locale('ar', 'AA'));
+            if (Get.locale?.languageCode != 'ar') {
+              _fromController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_fromController.text)];
+              _toController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_toController.text)];
             } else {
-              Get.updateLocale(const Locale('ar'));
+              _fromController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_fromController.text)];
+              _toController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_toController.text)];
             }
           },
-          icon: const Icon(Icons.language),
+          icon: const Icon(Icons.translate),
         ),
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: 90.0, maxWidth: 300),
+          constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 300),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -78,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: DropdownMenu(
                       width: context.width,
-                      hintText: locale.currentStation,
+                      hintText: 'currentStation'.tr,
                       menuHeight: 300.0,
                       dropdownMenuEntries: stationsList,
                       controller: _fromController,
@@ -108,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                                     _controller.nearestStation = await _findNearestStation(context);
                                     _fromController.text = _controller.nearestStation!.name;
                                   } catch (e) {
-                                    Get.snackbar(locale.openLocation, locale.needLocationPermission);
+                                    Get.snackbar('openLocation'.tr, 'needLocationPermission'.tr);
                                   }
                                   _controller.isFound.value = false;
                                   _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
@@ -139,7 +136,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 10),
               DropdownMenu(
-                hintText: locale.targetedStation,
+                hintText: 'targetedStation'.tr,
                 width: context.width,
                 menuHeight: 300.0,
                 dropdownMenuEntries: stationsList,
@@ -161,13 +158,15 @@ class _HomePageState extends State<HomePage> {
               Obx(
                 () => ElevatedButton(
                   onPressed: _controller.fromIsEntered.value && _controller.toIsEntered.value
-                      ? () => Get.to(
-                            () => RoutePage(),
-                            arguments: [_fromController.text, _toController.text],
-                            transition: Transition.cupertino,
-                          )
+                      ? () => _fromController.text != _toController.text
+                          ? Get.to(
+                              () => const RoutePage(),
+                              arguments: [_fromController.text, _toController.text],
+                              transition: Transition.cupertino,
+                            )
+                          : Get.snackbar('Wrong'.tr, '${'You\'re Already in'.tr} ${_fromController.text} ${'Station'.tr}')
                       : null,
-                  child: Text(locale.findRoute),
+                  child: Text('findRoute'.tr),
                 ),
               ),
               const SizedBox(height: 100),
@@ -181,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        hintText: locale.addressHint,
+                        hintText: 'addressHint'.tr,
                       ),
                       onChanged: (value) {
                         _targetedAddressController.text = value;
@@ -238,26 +237,25 @@ class HomeController extends GetxController {
 }
 
 Future<Station> _findNearestStation(BuildContext context) async {
-  var locale = AppLocalizations.of(context)!;
   bool serviceEnabled;
   LocationPermission permission;
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    return Future.error(locale.locationDisabled);
+    return Future.error('locationDisabled'.tr);
   }
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      Get.snackbar(locale.locationDeniedTitle, locale.locationDeniedMessage);
-      return Future.error(locale.permissionsDisabled);
+      Get.snackbar('locationDeniedTitle'.tr, 'locationDeniedMessage'.tr);
+      return Future.error('permissionsDisabled'.tr);
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    return Future.error(locale.permanentlyDenied);
+    return Future.error('permanentlyDenied'.tr);
   }
 
   if (!serviceEnabled) {}
@@ -265,8 +263,8 @@ Future<Station> _findNearestStation(BuildContext context) async {
   return calculatenearestStation(await Geolocator.getCurrentPosition());
 }
 
-double calculateHaversineDistance(double lat1, double lon1, double lat2, double lon2) {
-  const earthRadiusKm = 6371.0; // Earth's radius in kilometers
+double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const earthRadiusKm = 6371.0;
 
   final dLat = _toRadians(lat2 - lat1);
   final dLon = _toRadians(lon2 - lon1);
@@ -283,12 +281,12 @@ double _toRadians(double degree) {
 }
 
 Station calculatenearestStation(location) {
-  final stationList = stations;
+  final stationList = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
   var minDistance = double.infinity;
 
   var nearestStation = stationList.first;
   for (var st in stationList) {
-    final distance = calculateHaversineDistance(st.latitude, st.longitude, location.latitude, location.longitude);
+    final distance = _calculateDistance(st.latitude, st.longitude, location.latitude, location.longitude);
     if (distance < minDistance) {
       minDistance = distance;
       nearestStation = st;
