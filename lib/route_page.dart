@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:metro_system/coordinates_ar.dart' as ar_list;
 import 'package:metro_system/coordinates_en.dart' as en_list;
 
@@ -12,16 +11,15 @@ class RoutePage extends StatefulWidget {
 }
 
 class _RoutePageState extends State<RoutePage> {
-  final net = GetStorage();
-
   final stations = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations);
+
   @override
   Widget build(BuildContext context) {
     final route = bestRoute(Get.arguments[0], Get.arguments[1]);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('appTitle'.tr, style: TextStyle(fontSize: 20)),
+        title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
       ),
       body: Center(
         child: Padding(
@@ -29,9 +27,35 @@ class _RoutePageState extends State<RoutePage> {
           child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             itemCount: route.length,
-            itemBuilder: (_, index) => LineCard(
-              route: route[index],
-              lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
+            itemBuilder: (_, index) => Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _LineCard(
+                  route: route[index].length > 1
+                      ? route[index].sublist(0, route[index].length - (index < route.length - 1 ? 1 : 0))
+                      : route[index],
+                  lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
+                ),
+                if (index < route.length - 1)
+                  ListTile(
+                    title: Text(
+                      'exchangeStation'.trParams(
+                        {
+                          "station": route[index].last,
+                          "firstLineNumber":
+                              "${stations.firstWhere((station) => station.name == route[index].first).lineNumber + 1}",
+                          "secondLineNumber":
+                              "${stations.firstWhere((station) => station.name == route[index + 1].first).lineNumber + 1}"
+                        },
+                      ),
+                    ),
+                    leading: const Text(
+                      '\u2022',
+                      style: TextStyle(fontSize: 30),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  ),
+              ],
             ),
           ),
         ),
@@ -107,76 +131,84 @@ class _RoutePageState extends State<RoutePage> {
   }
 }
 
-class LineCard extends StatelessWidget {
-  const LineCard({super.key, required this.route, required this.lineNumber});
+class _LineCard extends StatelessWidget {
+  const _LineCard({required this.route, required this.lineNumber});
 
   final List<String> route;
   final int lineNumber;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          '${'line'.tr} ${lineNumber + 1}',
-          style: const TextStyle(fontSize: 20),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.0),
-            color: lineNumber == 0
-                ? Colors.blue.shade900
-                : lineNumber == 1
-                    ? Colors.red.shade900
-                    : Colors.green.shade900,
-          ),
-          padding: const EdgeInsets.all(16.0),
-          width: context.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              lineNumber == 0
-                  ? const Icon(Icons.looks_one_outlined)
-                  : lineNumber == 1
-                      ? const Icon(Icons.looks_two_outlined)
-                      : const Icon(Icons.looks_3_outlined),
-              route.length > 2
-                  ? Expanded(
-                      child: ExpansionTile(
-                        title: Text('${'from'.tr}: ${route.first}\n${'to'.tr}: ${route.last}'),
-                        children: route
-                            .map(
-                              (station) => SizedBox(
-                                width: context.width,
-                                child: ListTile(
-                                  title: Text(station),
-                                  leading: const Text(
-                                    '\u2022',
-                                    style: TextStyle(fontSize: 30),
-                                  ),
-                                ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        color: lineNumber == 0
+            ? Colors.blue.shade900
+            : lineNumber == 1
+                ? Colors.red.shade900
+                : Colors.green.shade900,
+      ),
+      padding: const EdgeInsets.all(16.0),
+      width: context.width,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          lineNumber == 0
+              ? const Icon(Icons.looks_one_outlined)
+              : lineNumber == 1
+                  ? const Icon(Icons.looks_two_outlined)
+                  : const Icon(Icons.looks_3_outlined),
+          route.length > 2
+              ? Expanded(
+                  child: ExpansionTile(
+                    title: Text(
+                      '${'from'.tr}: ${route.first}\n'
+                      '${'to'.tr}: ${route.last}',
+                    ),
+                    children: route
+                        .map(
+                          (station) => SizedBox(
+                            width: context.width,
+                            child: ListTile(
+                              minVerticalPadding: 2.0,
+                              minTileHeight: 0.0,
+                              minLeadingWidth: 2.0,
+                              title: Text(station),
+                              leading: const Text(
+                                '\u2022',
+                                style: TextStyle(fontSize: 30),
                               ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: route
-                          .map(
-                            (station) => Text(
-                              '$station \u2022',
-                              textAlign: TextAlign.right,
-                              style: const TextStyle(fontSize: 20),
                             ),
-                          )
-                          .toList(),
-                    )
-            ],
-          ),
-        ),
-      ],
+                          ),
+                        )
+                        .toList(),
+                  ),
+                )
+              : Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: route
+                        .map(
+                          (station) => SizedBox(
+                            width: context.width,
+                            child: ListTile(
+                              minVerticalPadding: 2.0,
+                              minTileHeight: 0.0,
+                              title: Text(station),
+                              minLeadingWidth: 2.0,
+                              leading: const Text(
+                                '\u2022',
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                )
+        ],
+      ),
     );
   }
 }

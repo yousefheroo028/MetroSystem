@@ -19,9 +19,10 @@ class Languages extends Translations {
           "locationDisabled": "اللوكيشن مقفول",
           "permanentlyDenied": "مش هنقدر نستخدم اللوكيشن عشان مقفول بشكل نهائي",
           "permissionsDisabled": "صلاحيات اللوكيشن مقفولة",
-          "Wrong": "غلط",
-          "You're Already in": "أنت فعلا موجود في",
-          "Station": "محطة"
+          "sameStations": "خخخخخ، أنت بتعمل ايه؟!",
+          "You're Already in": "أنت فعلًا موجود في محطة @station",
+          "Station": "محطة",
+          "exchangeStation": "هتحول من الخط @firstLineNumber للخط @secondLineNumber عن طريق محطة @station"
         },
         'en_US': {
           "appTitle": "Cairo Metro App",
@@ -40,9 +41,10 @@ class Languages extends Translations {
           "locationDisabled": "The location service on the device is disabled.",
           "permanentlyDenied": "Location permissions are permanently denied, we cannot request permissions.",
           "permissionsDisabled": "Location permissions are denied",
-          "Wrong": "Wrong",
-          "You're Already in": "You're Already in",
-          "Station": "Station"
+          "sameStations": "What are you doing?!",
+          "You're Already in": "You're Already in @station Station",
+          "Station": "Station",
+          "exchangeStation": "You will exchange from Line @firstLineNumber to Line @secondLineNumber through @station Station"
         },
       };
 }

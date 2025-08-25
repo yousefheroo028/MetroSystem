@@ -164,7 +164,7 @@ class _HomePageState extends State<HomePage> {
                               arguments: [_fromController.text, _toController.text],
                               transition: Transition.cupertino,
                             )
-                          : Get.snackbar('Wrong'.tr, '${'You\'re Already in'.tr} ${_fromController.text} ${'Station'.tr}')
+                          : Get.snackbar('sameStations'.tr, 'You\'re Already in'.trParams({"station": _fromController.text}))
                       : null,
                   child: Text('findRoute'.tr),
                 ),
@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),
