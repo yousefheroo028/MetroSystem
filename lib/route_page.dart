@@ -125,6 +125,7 @@ class _RoutePageState extends State<RoutePage> {
     List<List<String>> path = [];
     String? current = targetedStation;
     List<String> temp = [];
+
     while (current != null) {
       temp.insert(0, current);
       final lineN = stations.firstWhere((st) => st.name == current).lineNumber;
@@ -161,6 +162,7 @@ class _LineCard extends StatelessWidget {
                 : Colors.green.shade900,
       ),
       padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(4.0),
       width: context.width,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
