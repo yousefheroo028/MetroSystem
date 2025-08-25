@@ -24,39 +24,53 @@ class _RoutePageState extends State<RoutePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: route.length,
-            itemBuilder: (_, index) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _LineCard(
-                  route: route[index].length > 1
-                      ? route[index].sublist(0, route[index].length - (index < route.length - 1 ? 1 : 0))
-                      : route[index],
-                  lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
-                ),
-                if (index < route.length - 1)
-                  ListTile(
-                    title: Text(
-                      'exchangeStation'.trParams(
-                        {
-                          "station": route[index].last,
-                          "firstLineNumber":
-                              "${stations.firstWhere((station) => station.name == route[index].first).lineNumber + 1}",
-                          "secondLineNumber":
-                              "${stations.firstWhere((station) => station.name == route[index + 1].first).lineNumber + 1}"
-                        },
+          child: Column(
+            children: [
+              RouteInfo(route: route),
+              Divider(
+                color: Theme.of(context).dividerColor,
+                thickness: 2,
+                indent: 20,
+                radius: const BorderRadius.all(Radius.circular(16.0)),
+                endIndent: 20,
+              ),
+              Expanded(
+                child: ListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: route.length,
+                  itemBuilder: (_, index) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _LineCard(
+                        route: route[index].length > 1
+                            ? route[index].sublist(0, route[index].length - (index < route.length - 1 ? 1 : 0))
+                            : route[index],
+                        lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
                       ),
-                    ),
-                    leading: const Text(
-                      '\u2022',
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      if (index < route.length - 1)
+                        ListTile(
+                          title: Text(
+                            'exchangeStation'.trParams(
+                              {
+                                "station": route[index].last,
+                                "firstLineNumber":
+                                    "${stations.firstWhere((station) => station.name == route[index].first).lineNumber + 1}",
+                                "secondLineNumber":
+                                    "${stations.firstWhere((station) => station.name == route[index + 1].first).lineNumber + 1}"
+                              },
+                            ),
+                          ),
+                          leading: const Text(
+                            '\u2022',
+                            style: TextStyle(fontSize: 30),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        ),
+                    ],
                   ),
-              ],
-            ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -209,6 +223,76 @@ class _LineCard extends StatelessWidget {
                 )
         ],
       ),
+    );
+  }
+}
+
+class RouteInfo extends StatelessWidget {
+  const RouteInfo({super.key, required this.route});
+
+  final List<List<String>> route;
+
+  @override
+  Widget build(BuildContext context) {
+    final noOfStations = route.fold(0, (sum, list) => sum + list.length);
+    final double ticketPrice;
+    if (noOfStations == 0) {
+      ticketPrice = 0.0;
+    } else if (noOfStations <= 9) {
+      ticketPrice = 8.0;
+    } else if (noOfStations <= 16) {
+      ticketPrice = 10.0;
+    } else if (noOfStations <= 23) {
+      ticketPrice = 15.0;
+    } else {
+      ticketPrice = 20.0;
+    }
+
+    return Wrap(
+      children: [
+        Card(
+          surfaceTintColor: Theme.of(context).cardColor,
+          child: ListTile(
+            title: Text('expectedTime'.trParams({"time": "${noOfStations * 2}"})),
+          ),
+        ),
+        Card(
+          surfaceTintColor: Theme.of(context).cardColor,
+          child: ListTile(
+            title: Text(
+              'noOfStations'.trParams(
+                {
+                  "stations": "${noOfStations == 2 && Get.locale?.languageCode == 'ar' ? "" : noOfStations}",
+                  "number": Get.locale?.languageCode == 'ar'
+                      ? noOfStations == 2
+                          ? "محطتان"
+                          : "محطات"
+                      : "Stations"
+                },
+              ),
+            ),
+          ),
+        ),
+        Card(
+          surfaceTintColor: Theme.of(context).cardColor,
+          child: ListTile(
+            title: Text(
+              'Price'.trParams(
+                {
+                  "price": "${ticketPrice.toInt()}",
+                  "currency": Get.locale?.languageCode == 'ar'
+                      ? ticketPrice <= 10.0
+                          ? "جنيهات"
+                          : "جنيهًا"
+                      : ticketPrice > 1.0
+                          ? "Pounds"
+                          : "Pound"
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

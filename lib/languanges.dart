@@ -22,7 +22,10 @@ class Languages extends Translations {
           "sameStations": "خخخخخ، أنت بتعمل ايه؟!",
           "You're Already in": "أنت فعلًا موجود في محطة @station",
           "Station": "محطة",
-          "exchangeStation": "هتحول من الخط @firstLineNumber للخط @secondLineNumber عن طريق محطة @station"
+          "exchangeStation": "هتحول من الخط @firstLineNumber للخط @secondLineNumber عن طريق محطة @station",
+          "expectedTime": "الوقت المتوقع:\n@timeد",
+          "noOfStations": "عدد المحطات:\n@stations @number",
+          "Price": "سعر التذكرة للفرد:\n@price @currency"
         },
         'en_US': {
           "appTitle": "Cairo Metro App",
@@ -44,7 +47,10 @@ class Languages extends Translations {
           "sameStations": "What are you doing?!",
           "You're Already in": "You're Already in @station Station",
           "Station": "Station",
-          "exchangeStation": "You will exchange from Line @firstLineNumber to Line @secondLineNumber through @station Station"
+          "exchangeStation": "You will exchange from Line @firstLineNumber to Line @secondLineNumber through @station Station",
+          "expectedTime": "Expected Time:\n@timem",
+          "noOfStations": "Number of Stations:\n@stations @number",
+          "Price": "Price of each passenger:\n@price @currency"
         },
       };
 }
