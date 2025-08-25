@@ -15,7 +15,7 @@ class _RoutePageState extends State<RoutePage> {
 
   @override
   Widget build(BuildContext context) {
-    final route = bestRoute(Get.arguments[0], Get.arguments[1]);
+    final route = shortestRoute(Get.arguments[0], Get.arguments[1]);
 
     return Scaffold(
       appBar: AppBar(
@@ -42,9 +42,7 @@ class _RoutePageState extends State<RoutePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _LineCard(
-                        route: route[index].length > 1
-                            ? route[index].sublist(0, route[index].length - (index < route.length - 1 ? 1 : 0))
-                            : route[index],
+                        route: route[index],
                         lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
                       ),
                       if (index < route.length - 1)
@@ -77,7 +75,7 @@ class _RoutePageState extends State<RoutePage> {
     );
   }
 
-  List<List<String>> bestRoute(String currentStation, String targetedStation) {
+  List<List<String>> shortestRoute(String currentStation, String targetedStation) {
     final Map<String, List<String>> network = {};
     final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
 
@@ -248,49 +246,76 @@ class RouteInfo extends StatelessWidget {
       ticketPrice = 20.0;
     }
 
-    return Wrap(
+    return Column(
       children: [
-        Card(
-          surfaceTintColor: Theme.of(context).cardColor,
-          child: ListTile(
-            title: Text('expectedTime'.trParams({"time": "${noOfStations * 2}"})),
-          ),
-        ),
-        Card(
-          surfaceTintColor: Theme.of(context).cardColor,
-          child: ListTile(
-            title: Text(
-              'noOfStations'.trParams(
-                {
-                  "stations": "${noOfStations == 2 && Get.locale?.languageCode == 'ar' ? "" : noOfStations}",
-                  "number": Get.locale?.languageCode == 'ar'
-                      ? noOfStations == 2
-                          ? "محطتان"
-                          : "محطات"
-                      : "Stations"
-                },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Card(
+                surfaceTintColor: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    'expectedTime'.trParams({"time": "${noOfStations * 2}"}),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-        Card(
-          surfaceTintColor: Theme.of(context).cardColor,
-          child: ListTile(
-            title: Text(
-              'Price'.trParams(
-                {
-                  "price": "${ticketPrice.toInt()}",
-                  "currency": Get.locale?.languageCode == 'ar'
-                      ? ticketPrice <= 10.0
-                          ? "جنيهات"
-                          : "جنيهًا"
-                      : ticketPrice > 1.0
-                          ? "Pounds"
-                          : "Pound"
-                },
+            Expanded(
+              flex: 3,
+              child: Card(
+                surfaceTintColor: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    'noOfStations'.trParams(
+                      {
+                        "stations": "${noOfStations == 2 && Get.locale?.languageCode == 'ar' ? "" : noOfStations}",
+                        "number": Get.locale?.languageCode == 'ar'
+                            ? noOfStations == 2
+                                ? "محطتان"
+                                : noOfStations <= 10
+                                    ? "محطات"
+                                    : "محطة"
+                            : "Stations"
+                      },
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Card(
+                surfaceTintColor: Theme.of(context).cardColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Text(
+                    'Price'.trParams(
+                      {
+                        "price": "${ticketPrice.toInt()}",
+                        "currency": Get.locale?.languageCode == 'ar'
+                            ? ticketPrice <= 10.0
+                                ? "جنيهات"
+                                : "جنيهًا"
+                            : ticketPrice > 1.0
+                                ? "Pounds"
+                                : "Pound"
+                      },
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

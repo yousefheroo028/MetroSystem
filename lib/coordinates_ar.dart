@@ -1,6 +1,6 @@
 import 'station.dart';
 
-final stations = <Station>[
+const stations = <Station>[
   Station(name: 'المنيب', lineNumber: 1, latitude: 29.981153305051627, longitude: 31.2123248464122),
   Station(name: 'ساقية مكي', lineNumber: 1, latitude: 29.995472092704674, longitude: 31.20845957851606),
   Station(name: 'أم المصريين', lineNumber: 1, latitude: 30.006991782739266, longitude: 31.208721013595845),

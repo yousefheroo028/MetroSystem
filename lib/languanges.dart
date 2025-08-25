@@ -19,7 +19,7 @@ class Languages extends Translations {
           "locationDisabled": "اللوكيشن مقفول",
           "permanentlyDenied": "مش هنقدر نستخدم اللوكيشن عشان مقفول بشكل نهائي",
           "permissionsDisabled": "صلاحيات اللوكيشن مقفولة",
-          "sameStations": "خخخخخ، أنت بتعمل ايه؟!",
+          "sameStations": "أنت بتعمل ايه؟!",
           "You're Already in": "أنت فعلًا موجود في محطة @station",
           "Station": "محطة",
           "exchangeStation": "هتحول من الخط @firstLineNumber للخط @secondLineNumber عن طريق محطة @station",
