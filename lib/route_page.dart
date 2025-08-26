@@ -86,57 +86,78 @@ class _RoutePageState extends State<RoutePage> {
 
     final adlyMansourBranch2 =
         stations.where((station) => station.lineNumber == 2 && (station.branch == 2 || station.branch == null)).toList();
-    for (final line in [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2]) {
-      for (int i = 0; i < line.length - 1; i++) {
-        network.putIfAbsent(line[i].name, () => []);
-        network.putIfAbsent(line[i + 1].name, () => []);
-        network[line[i].name]!.add(line[i + 1].name);
-        network[line[i + 1].name]!.add(line[i].name);
-      }
-    }
-
-    Map<String, int> steps = {};
-    Map<String, String?> previous = {};
-    Set<String> visited = {};
-
-    for (final station in network.keys) {
-      steps[station] = 1000;
-      previous[station] = null;
-    }
-    steps[currentStation] = 0;
-
-    while (visited.length < network.keys.length) {
-      final current = (steps.entries.where((e) => !visited.contains(e.key)).reduce((a, b) => a.value < b.value ? a : b)).key;
-      if (current == targetedStation) break;
-
-      visited.add(current);
-
-      for (final neighbor in network[current]!) {
-        if (visited.contains(neighbor)) continue;
-
-        final newDist = steps[current]! + 1;
-        if (newDist < steps[neighbor]!) {
-          steps[neighbor] = newDist;
-          previous[neighbor] = current;
-        }
-      }
-    }
-
+    final lines = [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2];
     List<List<String>> path = [];
-    String? current = targetedStation;
-    List<String> temp = [];
-
-    while (current != null) {
-      temp.insert(0, current);
-      final lineN = stations.firstWhere((st) => st.name == current).lineNumber;
-      current = previous[current];
-      if (current != null) {
-        if (lineN != stations.firstWhere((st) => st.name == current).lineNumber) {
-          path.insert(0, temp.toList());
-          temp = [];
+    final firstlineNumber = stations.firstWhere((station) => station.name == currentStation).lineNumber;
+    final secondlineNumber = stations.firstWhere((station) => station.name == targetedStation).lineNumber;
+    if (firstlineNumber == secondlineNumber) {
+      final firstIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(currentStation);
+      final seconddIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(targetedStation);
+      final temp = <String>[];
+      if (firstIndex < seconddIndex) {
+        for (int i = firstIndex; i <= seconddIndex; i++) {
+          temp.insert(0, lines[firstlineNumber].map((station) => station.name).toList()[i]);
         }
       } else {
-        path.insert(0, temp);
+        for (int i = firstIndex; i >= seconddIndex; i--) {
+          temp.insert(0, lines[firstlineNumber].map((station) => station.name).toList()[i]);
+        }
+      }
+      path.add(temp);
+    } else {
+      for (final line in lines) {
+        for (int i = 0; i < line.length - 1; i++) {
+          network.putIfAbsent(line[i].name, () => []);
+          network.putIfAbsent(line[i + 1].name, () => []);
+          network[line[i].name]!.add(line[i + 1].name);
+          network[line[i + 1].name]!.add(line[i].name);
+        }
+      }
+
+      Map<String, int> steps = {};
+      Map<String, String?> previous = {};
+      Set<String> visited = {};
+
+      for (final station in network.keys) {
+        steps[station] = 1000;
+        previous[station] = null;
+      }
+      steps[currentStation] = 0;
+
+      while (visited.length < network.keys.length) {
+        final current = (steps.entries.where((e) => !visited.contains(e.key)).reduce((a, b) => a.value < b.value ? a : b)).key;
+        if (current == targetedStation) break;
+
+        visited.add(current);
+
+        for (final neighbor in network[current]!) {
+          if (visited.contains(neighbor)) continue;
+
+          final newDist = steps[current]! + 1;
+          if (newDist < steps[neighbor]!) {
+            steps[neighbor] = newDist;
+            previous[neighbor] = current;
+          }
+        }
+      }
+
+      String? current = targetedStation;
+      List<String> temp = [];
+      List<String> transferStations = ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة"];
+
+      while (current != null) {
+        temp.insert(0, current);
+        final lineN = stations.firstWhere((st) => st.name == current).lineNumber;
+        current = previous[current];
+        if (current != null && previous[current] != null) {
+          if (transferStations.contains(current) &&
+              lineN != stations.firstWhere((st) => st.name == previous[current]).lineNumber) {
+            path.insert(0, temp.toList());
+            temp.clear();
+          }
+        } else {
+          if (current != null) path.insert(0, temp);
+        }
       }
     }
 
