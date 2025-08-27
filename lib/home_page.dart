@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:metro_system/coordinates_ar.dart' as ar_list;
 import 'package:metro_system/coordinates_en.dart' as en_list;
+import 'package:metro_system/map_view.dart';
 import 'package:metro_system/route_page.dart';
 import 'package:metro_system/station.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,8 +40,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final stationsList = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations)
+        .map((station) => station.name)
         .toSet()
-        .map((station) => DropdownMenuEntry(value: station.name, label: station.name))
+        .map((station) => DropdownMenuEntry(value: station, label: station))
         .toList();
 
     return Scaffold(
@@ -64,10 +66,24 @@ class _HomePageState extends State<HomePage> {
           icon: const Icon(Icons.translate),
         ),
       ),
+      floatingActionButton: SizedBox(
+        width: 100,
+        child: FloatingActionButton(
+          onPressed: () {
+            Get.to(
+              const MapView(),
+              arguments: "assets/images/metroMap.jpg",
+              transition: Transition.cupertino,
+            );
+          },
+          child: Text('map'.tr),
+        ),
+      ),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 300),
           child: Column(
+            spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
@@ -93,48 +109,52 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                  Obx(
-                    () => Row(
-                      children: [
-                        IconButton(
-                          onPressed: _controller.isFound.value
-                              ? null
-                              : () async {
-                                  _controller.isFound.value = true;
-                                  try {
-                                    _controller.nearestStation = await _findNearestStation(context);
-                                    _fromController.text = _controller.nearestStation!.name;
-                                  } catch (e) {
-                                    Get.snackbar('openLocation'.tr, 'needLocationPermission'.tr);
-                                  }
-                                  _controller.isFound.value = false;
-                                  _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
-                                },
-                          icon: _controller.isFound.value
-                              ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
-                              : const Icon(Icons.location_on_outlined),
-                        ),
-                        IconButton(
-                          onPressed: !_controller.fromIsEntered.value
-                              ? null
-                              : () async {
-                                  await launchUrl(
-                                    Uri(
-                                      scheme: 'google.navigation',
-                                      queryParameters: {
-                                        'q': '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
-                                      },
-                                    ),
-                                  );
-                                },
-                          icon: const Icon(Icons.map),
-                        )
-                      ],
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 10),
+              Obx(
+                () => Row(
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _controller.isFound.value
+                          ? null
+                          : () async {
+                              _controller.isFound.value = true;
+                              try {
+                                _controller.nearestStation = await _findNearestStation(context);
+                                _fromController.text = _controller.nearestStation!.name;
+                              } catch (e) {
+                                Get.snackbar('openLocation'.tr, 'needLocationPermission'.tr);
+                              }
+                              _controller.isFound.value = false;
+                              _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
+                            },
+                      icon: _controller.isFound.value
+                          ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
+                          : const Icon(Icons.location_on_outlined),
+                      style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                      label: Text('nearestStation'.tr),
+                    ),
+                    const Expanded(child: Text('')),
+                    ElevatedButton.icon(
+                      onPressed: !_controller.fromIsEntered.value
+                          ? null
+                          : () async {
+                              await launchUrl(
+                                Uri(
+                                  scheme: 'google.navigation',
+                                  queryParameters: {
+                                    'q': '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
+                                  },
+                                ),
+                              );
+                            },
+                      style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                      icon: const Icon(Icons.map),
+                      label: Text('locationOfStation'.tr),
+                    ),
+                  ],
+                ),
+              ),
               DropdownMenu(
                 hintText: 'targetedStation'.tr,
                 width: context.width,
@@ -154,7 +174,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
               Obx(
                 () => ElevatedButton(
                   onPressed: _controller.fromIsEntered.value && _controller.toIsEntered.value
@@ -169,9 +188,20 @@ class _HomePageState extends State<HomePage> {
                   child: Text('findRoute'.tr),
                 ),
               ),
-              const SizedBox(height: 100),
               Row(
                 children: [
+                  Obx(
+                    () {
+                      return IconButton(
+                          onPressed: _controller.targetedIsEntered.value
+                              ? () {
+                                  _targetedAddressController.text = '';
+                                  _controller.targetedIsEntered.value = false;
+                                }
+                              : null,
+                          icon: const Icon(Icons.delete_outline));
+                    },
+                  ),
                   Expanded(
                     child: TextField(
                       controller: _targetedAddressController,
@@ -188,9 +218,15 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
+                ],
+              ),
+              Obx(
+                () => Row(
+                  spacing: 8.0,
+                  children: [
+                    Expanded(
+                      flex: 10,
+                      child: ElevatedButton.icon(
                         onPressed: _controller.targetedIsEntered.value
                             ? () async {
                                 final locations = await locationFromAddress(_targetedAddressController.text);
@@ -199,9 +235,13 @@ class _HomePageState extends State<HomePage> {
                                 _controller.toIsEntered.value = _toController.text.isNotEmpty;
                               }
                             : null,
-                        icon: const Icon(Icons.location_searching_sharp),
+                        style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                        label: Text('nearestStationForAddress'.tr),
                       ),
-                      IconButton(
+                    ),
+                    Expanded(
+                      flex: 9,
+                      child: ElevatedButton.icon(
                         onPressed: !_controller.targetedIsEntered.value
                             ? null
                             : () async {
@@ -213,11 +253,12 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               },
-                        icon: const Icon(Icons.map),
-                      )
-                    ],
-                  ),
-                ],
+                        style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                        label: Text('locationOfStation'.tr),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),

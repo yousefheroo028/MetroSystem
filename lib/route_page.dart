@@ -26,7 +26,7 @@ class _RoutePageState extends State<RoutePage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              RouteInfo(route: route),
+              _RouteInfo(route: route),
               Divider(
                 color: Theme.of(context).dividerColor,
                 thickness: 2,
@@ -96,11 +96,11 @@ class _RoutePageState extends State<RoutePage> {
       final temp = <String>[];
       if (firstIndex < seconddIndex) {
         for (int i = firstIndex; i <= seconddIndex; i++) {
-          temp.insert(0, lines[firstlineNumber].map((station) => station.name).toList()[i]);
+          temp.add(lines[firstlineNumber].map((station) => station.name).toList()[i]);
         }
       } else {
         for (int i = firstIndex; i >= seconddIndex; i--) {
-          temp.insert(0, lines[firstlineNumber].map((station) => station.name).toList()[i]);
+          temp.add(lines[firstlineNumber].map((station) => station.name).toList()[i]);
         }
       }
       path.add(temp);
@@ -143,7 +143,9 @@ class _RoutePageState extends State<RoutePage> {
 
       String? current = targetedStation;
       List<String> temp = [];
-      List<String> transferStations = ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة"];
+      List<String> transferStations = Get.locale?.languageCode == 'ar'
+          ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة"]
+          : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University"];
 
       while (current != null) {
         temp.insert(0, current);
@@ -248,8 +250,8 @@ class _LineCard extends StatelessWidget {
   }
 }
 
-class RouteInfo extends StatelessWidget {
-  const RouteInfo({super.key, required this.route});
+class _RouteInfo extends StatelessWidget {
+  const _RouteInfo({required this.route});
 
   final List<List<String>> route;
 
