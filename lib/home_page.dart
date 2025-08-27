@@ -47,38 +47,99 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
+        centerTitle: true,
         leading: IconButton(
-          onPressed: () async {
-            final arabicNamesOfStations = ar_list.stations.map((station) => station.name).toSet().toList();
-            final englishNamesOfStations = en_list.stations.map((station) => station.name).toSet().toList();
-            (Get.locale?.languageCode == 'ar')
-                ? await Get.updateLocale(const Locale('en', 'US'))
-                : await Get.updateLocale(const Locale('ar', 'AA'));
-            if (Get.locale?.languageCode != 'ar') {
-              _fromController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_fromController.text)];
-              _toController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_toController.text)];
-            } else {
-              _fromController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_fromController.text)];
-              _toController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_toController.text)];
-            }
-          },
-          icon: const Icon(Icons.translate),
-        ),
-      ),
-      floatingActionButton: SizedBox(
-        width: 100,
-        child: FloatingActionButton(
           onPressed: () {
-            Get.to(
-              const MapView(),
-              arguments: "assets/images/metroMap.jpg",
-              transition: Transition.cupertino,
-            );
+            Get.changeTheme(Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
           },
-          child: Text('map'.tr),
+          icon: Get.isDarkMode ? const Icon(Icons.light_mode) : const Icon(Icons.dark_mode),
         ),
+        title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final arabicNamesOfStations = ar_list.stations.map((station) => station.name).toSet().toList();
+              final englishNamesOfStations = en_list.stations.map((station) => station.name).toSet().toList();
+              (Get.locale?.languageCode == 'ar')
+                  ? await Get.updateLocale(const Locale('en', 'US'))
+                  : await Get.updateLocale(const Locale('ar', 'AA'));
+              if (Get.locale?.languageCode != 'ar') {
+                _fromController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_fromController.text)];
+                _toController.text = englishNamesOfStations[arabicNamesOfStations.indexOf(_toController.text)];
+              } else {
+                _fromController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_fromController.text)];
+                _toController.text = arabicNamesOfStations[englishNamesOfStations.indexOf(_toController.text)];
+              }
+            },
+            icon: const Icon(Icons.translate),
+          ),
+        ],
       ),
+      // drawer: Drawer(
+      //   width: context.width / 1.5,
+      //   clipBehavior: Clip.antiAliasWithSaveLayer,
+      //   child: Column(
+      //     children: [
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: UserAccountsDrawerHeader(
+      //           decoration: BoxDecoration(
+      //             color: Theme.of(context).primaryColor,
+      //           ),
+      //           accountName: Text('appTitle'.tr),
+      //           accountEmail: null,
+      //           currentAccountPicture: Image.asset('assets/images/logo.png'),
+      //         ),
+      //       ),
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: TextButton.icon(
+      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
+      //           onPressed: () {},
+      //           label: Text('homePage'.tr),
+      //           icon: const Icon(Icons.home),
+      //         ),
+      //       ),
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: TextButton.icon(
+      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
+      //           onPressed: () {},
+      //           label: Text('history'.tr),
+      //           icon: const Icon(Icons.history),
+      //         ),
+      //       ),
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: TextButton.icon(
+      //           onPressed: () {},
+      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
+      //           label: Text('favorites'.tr),
+      //           icon: const Icon(Icons.favorite_border),
+      //         ),
+      //       ),
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: TextButton.icon(
+      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
+      //           onPressed: () {},
+      //           label: Text('settings'.tr),
+      //           icon: const Icon(Icons.settings),
+      //         ),
+      //       ),
+      //       const Divider(),
+      //       SizedBox(
+      //         width: double.infinity,
+      //         child: TextButton.icon(
+      //           onPressed: () {},
+      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
+      //           label: Text('about'.tr),
+      //           icon: const Icon(Icons.info_outline),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 300),
@@ -183,7 +244,10 @@ class _HomePageState extends State<HomePage> {
                               arguments: [_fromController.text, _toController.text],
                               transition: Transition.cupertino,
                             )
-                          : Get.snackbar('sameStations'.tr, 'You\'re Already in'.trParams({"station": _fromController.text}))
+                          : Get.snackbar(
+                              'sameStations'.tr,
+                              'You\'re Already in'.trParams({"station": _fromController.text}),
+                            )
                       : null,
                   child: Text('findRoute'.tr),
                 ),
@@ -262,6 +326,19 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: SizedBox(
+        width: 100,
+        child: FloatingActionButton(
+          onPressed: () {
+            Get.to(
+              () => const MapView(),
+              arguments: "assets/images/metroMap.jpg",
+              transition: Transition.cupertino,
+            );
+          },
+          child: Text('map'.tr),
         ),
       ),
     );

@@ -277,7 +277,7 @@ class _RouteInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              flex: 2,
+              flex: 8,
               child: Card(
                 surfaceTintColor: Theme.of(context).cardColor,
                 child: Padding(
@@ -290,7 +290,7 @@ class _RouteInfo extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 10,
               child: Card(
                 surfaceTintColor: Theme.of(context).cardColor,
                 child: Padding(

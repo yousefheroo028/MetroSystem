@@ -21,7 +21,9 @@ class Entry extends StatelessWidget {
       translations: Languages(),
       locale: Get.deviceLocale,
       fallbackLocale: const Locale('ar', 'AE'),
-      theme: ThemeData.dark(useMaterial3: true),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
