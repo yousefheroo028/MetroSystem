@@ -57,7 +57,7 @@ class _RoutePageState extends State<RoutePage> {
                                 {
                                   "station": route[index].last,
                                   "firstLineNumber": "${f + 1}",
-                                  "secondLineNumber": s != 3 ? "للخط ${s + 1}" : "لقطار العاصمة"
+                                  "secondLineNumber": s != 3 ? "للخط ${s + 1}" : "لخط قطار العاصمة"
                                 },
                               ),
                             ),
