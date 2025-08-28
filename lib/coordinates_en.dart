@@ -27,6 +27,7 @@ const stations = <Station>[
   Station(name: 'Wadi Hof', lineNumber: 0, latitude: 29.87917728709114, longitude: 31.31300066340233),
   Station(name: 'Hadayeq Helwan', lineNumber: 0, latitude: 29.897305314527753, longitude: 31.304223586231874),
   Station(name: 'El Maasara', lineNumber: 0, latitude: 29.906065221936977, longitude: 31.29927197405296),
+  Station(name: 'Tura El-Asmant', lineNumber: 0, latitude: 29.92606902058277, longitude: 31.28641220338209),
   Station(name: 'Kozzika', lineNumber: 0, latitude: 29.93627993477272, longitude: 31.281684536917687),
   Station(name: 'Tora El Balad', lineNumber: 0, latitude: 29.946779392790393, longitude: 31.27284748233696),
   Station(name: 'Thakanat El Maadi', lineNumber: 0, latitude: 29.952889749423992, longitude: 31.263304993492834),
