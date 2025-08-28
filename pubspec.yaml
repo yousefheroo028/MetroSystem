@@ -49,6 +49,7 @@ dependencies:
   open_route_service: ^1.2.7
   photo_view: ^0.15.0
   cached_network_image: ^3.4.1
+  timeline_tile: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -38,34 +38,38 @@ class _RoutePageState extends State<RoutePage> {
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
                   itemCount: route.length,
-                  itemBuilder: (_, index) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _LineCard(
-                        route: route[index],
-                        lineNumber: stations.firstWhere((station) => station.name == route[index][0]).lineNumber,
-                      ),
-                      if (index < route.length - 1)
-                        ListTile(
-                          title: Text(
-                            'exchangeStation'.trParams(
-                              {
-                                "station": route[index].last,
-                                "firstLineNumber":
-                                    "${stations.firstWhere((station) => station.name == route[index].first).lineNumber + 1}",
-                                "secondLineNumber":
-                                    "${stations.firstWhere((station) => station.name == route[index + 1].first).lineNumber + 1}"
-                              },
-                            ),
-                          ),
-                          leading: const Text(
-                            '\u2022',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  itemBuilder: (_, index) {
+                    final f = stations.firstWhere((station) => station.name == route[index].first).lineNumber;
+                    final s = index < route.length - 1
+                        ? stations.firstWhere((station) => station.name == route[index + 1].first).lineNumber
+                        : 0;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _LineCard(
+                          route: route[index],
+                          lineNumber: f,
                         ),
-                    ],
-                  ),
+                        if (index < route.length - 1)
+                          ListTile(
+                            title: Text(
+                              'exchangeStation'.trParams(
+                                {
+                                  "station": route[index].last,
+                                  "firstLineNumber": "${f + 1}",
+                                  "secondLineNumber": s != 3 ? "للخط ${s + 1}" : "لقطار العاصمة"
+                                },
+                              ),
+                            ),
+                            leading: const Text(
+                              '\u2022',
+                              style: TextStyle(fontSize: 30),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
@@ -82,14 +86,29 @@ class _RoutePageState extends State<RoutePage> {
     final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
 
     final adlyMansourBranch1 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+        stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
 
     final adlyMansourBranch2 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 2 || station.branch == null)).toList();
-    final lines = [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2];
+        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+
+    final capitalTrainLineBranch1 =
+        stations.where((station) => station.lineNumber == 3 && (station.branch == 0 || station.branch == null)).toList();
+
+    final capitalTrainLineBranch2 =
+        stations.where((station) => station.lineNumber == 3 && (station.branch == 1 || station.branch == null)).toList();
+    final lines = [
+      helwanLine,
+      elmounibLine,
+      adlyMansourBranch1,
+      adlyMansourBranch2,
+      capitalTrainLineBranch1,
+      capitalTrainLineBranch2
+    ];
     List<List<String>> path = [];
-    final firstlineNumber = stations.firstWhere((station) => station.name == currentStation).lineNumber;
-    final secondlineNumber = stations.firstWhere((station) => station.name == targetedStation).lineNumber;
+    final firstlineNumber = stations.firstWhere((station) => station.name == currentStation).lineNumber +
+        (stations.firstWhere((station) => station.name == currentStation).branch ?? 0);
+    final secondlineNumber = stations.firstWhere((station) => station.name == targetedStation).lineNumber +
+        (stations.firstWhere((station) => station.name == targetedStation).branch ?? 0);
     if (firstlineNumber == secondlineNumber) {
       final firstIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(currentStation);
       final seconddIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(targetedStation);
@@ -113,7 +132,6 @@ class _RoutePageState extends State<RoutePage> {
           network[line[i + 1].name]!.add(line[i].name);
         }
       }
-
       Map<String, int> steps = {};
       Map<String, String?> previous = {};
       Set<String> visited = {};
@@ -144,8 +162,8 @@ class _RoutePageState extends State<RoutePage> {
       String? current = targetedStation;
       List<String> temp = [];
       List<String> transferStations = Get.locale?.languageCode == 'ar'
-          ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة"]
-          : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University"];
+          ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة", "عدلي منصور"]
+          : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University", "Adly Mansour"];
 
       while (current != null) {
         temp.insert(0, current);
@@ -182,7 +200,9 @@ class _LineCard extends StatelessWidget {
             ? Colors.blue.shade900
             : lineNumber == 1
                 ? Colors.red.shade900
-                : Colors.green.shade900,
+                : lineNumber == 2
+                    ? Colors.green.shade900
+                    : Colors.orange.shade900,
       ),
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.all(4.0),
@@ -194,7 +214,9 @@ class _LineCard extends StatelessWidget {
               ? const Icon(Icons.looks_one_outlined)
               : lineNumber == 1
                   ? const Icon(Icons.looks_two_outlined)
-                  : const Icon(Icons.looks_3_outlined),
+                  : lineNumber == 2
+                      ? const Icon(Icons.looks_3_outlined)
+                      : const Icon(Icons.train_outlined),
           route.length > 2
               ? Expanded(
                   child: ExpansionTile(
@@ -258,7 +280,7 @@ class _RouteInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final noOfStations = route.fold(0, (sum, list) => sum + list.length);
-    final double ticketPrice;
+    double ticketPrice = 0;
     if (noOfStations == 0) {
       ticketPrice = 0.0;
     } else if (noOfStations <= 9) {

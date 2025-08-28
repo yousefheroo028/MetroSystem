@@ -23,7 +23,7 @@ class Languages extends Translations {
           "sameStations": "أنت بتعمل ايه؟!",
           "You're Already in": "أنت فعلًا موجود في محطة @station",
           "Station": "محطة",
-          "exchangeStation": "هتحول من الخط @firstLineNumber للخط @secondLineNumber عن طريق محطة @station",
+          "exchangeStation": "هتحول من الخط @firstLineNumber @secondLineNumber عن طريق محطة @station",
           "expectedTime": "الوقت المتوقع:\n@timeد",
           "nearestStation": "ايه أقرب محطة ليا؟",
           "homePage": "الصفحة الرئيسيى",
@@ -65,7 +65,7 @@ class Languages extends Translations {
           "sameStations": "What are you doing?!",
           "You're Already in": "You're Already in @station Station",
           "Station": "Station",
-          "exchangeStation": "You will exchange from Line @firstLineNumber to Line @secondLineNumber through @station Station",
+          "exchangeStation": "You will exchange from Line @firstLineNumber to @secondLineNumber through @station Station",
           "expectedTime": "Expected Time:\n@timem",
           "noOfStations": "Number of Stations:\n@stations @number",
           "Price": "Price of each passenger:\n@price @currency"
