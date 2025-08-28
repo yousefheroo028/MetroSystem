@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:metro_system/coordinates_ar.dart' as ar_list;
 import 'package:metro_system/coordinates_en.dart' as en_list;
+import 'package:timeline_tile/timeline_tile.dart';
 
 class RoutePage extends StatefulWidget {
   const RoutePage({super.key});
@@ -51,21 +52,42 @@ class _RoutePageState extends State<RoutePage> {
                           lineNumber: f,
                         ),
                         if (index < route.length - 1)
-                          ListTile(
-                            title: Text(
-                              'exchangeStation'.trParams(
-                                {
-                                  "station": route[index].last,
-                                  "firstLineNumber": "${f + 1}",
-                                  "secondLineNumber": s != 3 ? "للخط ${s + 1}" : "لخط قطار العاصمة"
-                                },
+                          TimelineTile(
+                            endChild: ListTile(
+                              title: Text(
+                                'exchangeStation'.trParams(
+                                  {
+                                    "station": route[index].last,
+                                    "firstLineNumber": f != 3
+                                        ? Get.locale?.languageCode == 'ar'
+                                            ? "من الخط ${f + 1}"
+                                            : "From Line ${f + 1}"
+                                        : Get.locale?.languageCode == 'ar'
+                                            ? "من خط قطار العاصمة"
+                                            : "From Capital Train Line",
+                                    "secondLineNumber": s != 3
+                                        ? Get.locale?.languageCode == 'ar'
+                                            ? "للخط ${s + 1}"
+                                            : "Line ${s + 1}"
+                                        : Get.locale?.languageCode == 'ar'
+                                            ? "لخط قطار العاصمة"
+                                            : "Capital Train Line"
+                                  },
+                                ),
                               ),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                             ),
-                            leading: const Text(
-                              '\u2022',
-                              style: TextStyle(fontSize: 30),
+                            indicatorStyle: const IndicatorStyle(
+                              width: 10.0,
+                              color: Colors.white,
+                              indicator: Icon(Icons.compare_arrows),
+                              padding: EdgeInsets.only(left: 32.0),
+                              indicatorXY: 0.5,
                             ),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            beforeLineStyle: const LineStyle(color: Colors.transparent),
+                            afterLineStyle: const LineStyle(color: Colors.transparent),
+                            isFirst: index == 0,
+                            isLast: index == route.length - 1,
                           ),
                       ],
                     );

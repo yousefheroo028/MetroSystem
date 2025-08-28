@@ -75,74 +75,9 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      // drawer: Drawer(
-      //   width: context.width / 1.5,
-      //   clipBehavior: Clip.antiAliasWithSaveLayer,
-      //   child: Column(
-      //     children: [
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: UserAccountsDrawerHeader(
-      //           decoration: BoxDecoration(
-      //             color: Theme.of(context).primaryColor,
-      //           ),
-      //           accountName: Text('appTitle'.tr),
-      //           accountEmail: null,
-      //           currentAccountPicture: Image.asset('assets/images/logo.png'),
-      //         ),
-      //       ),
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: TextButton.icon(
-      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
-      //           onPressed: () {},
-      //           label: Text('homePage'.tr),
-      //           icon: const Icon(Icons.home),
-      //         ),
-      //       ),
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: TextButton.icon(
-      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
-      //           onPressed: () {},
-      //           label: Text('history'.tr),
-      //           icon: const Icon(Icons.history),
-      //         ),
-      //       ),
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: TextButton.icon(
-      //           onPressed: () {},
-      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
-      //           label: Text('favorites'.tr),
-      //           icon: const Icon(Icons.favorite_border),
-      //         ),
-      //       ),
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: TextButton.icon(
-      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
-      //           onPressed: () {},
-      //           label: Text('settings'.tr),
-      //           icon: const Icon(Icons.settings),
-      //         ),
-      //       ),
-      //       const Divider(),
-      //       SizedBox(
-      //         width: double.infinity,
-      //         child: TextButton.icon(
-      //           onPressed: () {},
-      //           style: const ButtonStyle(alignment: AlignmentDirectional.centerStart),
-      //           label: Text('about'.tr),
-      //           icon: const Icon(Icons.info_outline),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 300),
+          constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 310),
           child: Column(
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -318,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                         style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
-                        label: Text('locationOfStation'.tr),
+                        label: Text('locationOfAddress'.tr),
                       ),
                     )
                   ],

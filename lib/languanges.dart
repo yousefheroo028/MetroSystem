@@ -23,7 +23,7 @@ class Languages extends Translations {
           "sameStations": "أنت بتعمل ايه؟!",
           "You're Already in": "أنت فعلًا موجود في محطة @station",
           "Station": "محطة",
-          "exchangeStation": "هتحول من الخط @firstLineNumber @secondLineNumber عن طريق محطة @station",
+          "exchangeStation": "هتحول @firstLineNumber @secondLineNumber عن طريق محطة @station",
           "expectedTime": "الوقت المتوقع:\n@timeد",
           "nearestStation": "ايه أقرب محطة ليا؟",
           "homePage": "الصفحة الرئيسيى",
@@ -32,6 +32,7 @@ class Languages extends Translations {
           "settings": "الإعدادات",
           "about": "عن البرنامج",
           "locationOfStation": "ازاي أروح للمحطة دي؟",
+          "locationOfAddress": "ازاي أروح للعنوان دا؟",
           "nearestStationForAddress": "ايه أقرب محطة للعنوان دا؟",
           "noOfStations": "عدد المحطات:\n@stations @number",
           "Price": "سعر التذكرة للفرد:\n@price @currency"
@@ -39,6 +40,7 @@ class Languages extends Translations {
         'en_US': {
           "nearestStation": "Nearest Station",
           "locationOfStation": "Route to Station",
+          "locationOfAddress": "Route to Address",
           "nearestStationForAddress": "Nearest Station",
           "appTitle": "Cairo Metro App",
           "homePage": "Home Page",
@@ -65,7 +67,7 @@ class Languages extends Translations {
           "sameStations": "What are you doing?!",
           "You're Already in": "You're Already in @station Station",
           "Station": "Station",
-          "exchangeStation": "You will exchange from Line @firstLineNumber to @secondLineNumber through @station Station",
+          "exchangeStation": "You will exchange @firstLineNumber to @secondLineNumber through @station Station",
           "expectedTime": "Expected Time:\n@timem",
           "noOfStations": "Number of Stations:\n@stations @number",
           "Price": "Price of each passenger:\n@price @currency"
