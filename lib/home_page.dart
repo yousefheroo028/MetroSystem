@@ -45,14 +45,21 @@ class _HomePageState extends State<HomePage> {
         .map((station) => DropdownMenuEntry(value: station, label: station))
         .toList();
 
+    final isDarkMode = Get.isDarkMode.obs;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () {
-            Get.changeTheme(Get.isDarkMode ? ThemeData.light() : ThemeData.dark());
+        leading: Obx(
+          () {
+            return IconButton(
+              onPressed: () {
+                Get.changeThemeMode(isDarkMode.value ? ThemeMode.light : ThemeMode.dark);
+                isDarkMode.value = !isDarkMode.value;
+              },
+              icon: isDarkMode.value ? const Icon(Icons.light_mode) : const Icon(Icons.dark_mode),
+            );
           },
-          icon: Get.isDarkMode ? const Icon(Icons.light_mode) : const Icon(Icons.dark_mode),
         ),
         title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
         actions: [
@@ -76,77 +83,71 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 90.0, maxWidth: 310),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
           child: Column(
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: DropdownMenu(
-                      width: context.width,
-                      hintText: 'currentStation'.tr,
-                      menuHeight: 300.0,
-                      dropdownMenuEntries: stationsList,
-                      controller: _fromController,
-                      enableSearch: true,
-                      enableFilter: true,
-                      requestFocusOnTap: true,
-                      onSelected: (value) {
-                        _fromController.text = value!;
-                        _controller.fromIsEntered.value = true;
-                      },
-                      inputDecorationTheme: InputDecorationTheme(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              DropdownMenu(
+                hintText: 'currentStation'.tr,
+                menuHeight: 300.0,
+                dropdownMenuEntries: stationsList,
+                width: context.width,
+                controller: _fromController,
+                enableSearch: true,
+                enableFilter: true,
+                requestFocusOnTap: true,
+                leadingIcon: const Icon(Icons.train_outlined),
+                onSelected: (value) {
+                  _fromController.text = value!;
+                  _controller.fromIsEntered.value = true;
+                },
               ),
               Obx(
                 () => Row(
+                  spacing: 8.0,
                   children: [
-                    ElevatedButton.icon(
-                      onPressed: _controller.isFound.value
-                          ? null
-                          : () async {
-                              _controller.isFound.value = true;
-                              try {
-                                _controller.nearestStation = await _findNearestStation(context);
-                                _fromController.text = _controller.nearestStation!.name;
-                              } catch (e) {
-                                Get.snackbar('openLocation'.tr, 'needLocationPermission'.tr);
-                              }
-                              _controller.isFound.value = false;
-                              _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
-                            },
-                      icon: _controller.isFound.value
-                          ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
-                          : const Icon(Icons.location_on_outlined),
-                      style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
-                      label: Text('nearestStation'.tr),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _controller.isFound.value
+                            ? null
+                            : () async {
+                                _controller.isFound.value = true;
+                                try {
+                                  _controller.nearestStation = await _findNearestStation(context);
+                                  _fromController.text = _controller.nearestStation!.name;
+                                } catch (e) {
+                                  Get.snackbar('openLocation'.tr, 'needLocationPermission'.tr);
+                                }
+                                _controller.isFound.value = false;
+                                _controller.fromIsEntered.value = _fromController.text.isNotEmpty;
+                              },
+                        icon: _controller.isFound.value
+                            ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
+                            : const Icon(Icons.location_on_outlined),
+                        style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                        label: Text('nearestStation'.tr),
+                      ),
                     ),
-                    const Expanded(child: Text('')),
-                    ElevatedButton.icon(
-                      onPressed: !_controller.fromIsEntered.value
-                          ? null
-                          : () async {
-                              await launchUrl(
-                                Uri(
-                                  scheme: 'google.navigation',
-                                  queryParameters: {
-                                    'q': '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
-                                  },
-                                ),
-                              );
-                            },
-                      style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
-                      icon: const Icon(Icons.map),
-                      label: Text('locationOfStation'.tr),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: !_controller.fromIsEntered.value
+                            ? null
+                            : () async {
+                                await launchUrl(
+                                  Uri(
+                                    scheme: 'google.navigation',
+                                    queryParameters: {
+                                      'q': '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
+                                    },
+                                  ),
+                                );
+                              },
+                        style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                        icon: const Icon(Icons.map),
+                        label: Text('locationOfStation'.tr),
+                      ),
                     ),
                   ],
                 ),
@@ -158,17 +159,13 @@ class _HomePageState extends State<HomePage> {
                 dropdownMenuEntries: stationsList,
                 controller: _toController,
                 enableSearch: true,
+                leadingIcon: const Icon(Icons.train_outlined),
                 enableFilter: true,
                 requestFocusOnTap: true,
                 onSelected: (value) {
                   _toController.text = value!;
                   _controller.toIsEntered.value = true;
                 },
-                inputDecorationTheme: InputDecorationTheme(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
               Obx(
                 () => ElevatedButton(
@@ -205,10 +202,6 @@ class _HomePageState extends State<HomePage> {
                     child: TextField(
                       controller: _targetedAddressController,
                       decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(8.0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
                         hintText: 'addressHint'.tr,
                       ),
                       onChanged: (value) {

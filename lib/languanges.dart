@@ -34,6 +34,7 @@ class Languages extends Translations {
           "locationOfStation": "ازاي أروح للمحطة دي؟",
           "locationOfAddress": "ازاي أروح للعنوان دا؟",
           "nearestStationForAddress": "ايه أقرب محطة للعنوان دا؟",
+          "routeLine": "خط السير",
           "noOfStations": "عدد المحطات:\n@stations @number",
           "Price": "سعر التذكرة للفرد:\n@price @currency"
         },
@@ -43,6 +44,7 @@ class Languages extends Translations {
           "locationOfAddress": "Route to Address",
           "nearestStationForAddress": "Nearest Station",
           "appTitle": "Cairo Metro App",
+          "routeLine": "Route Line",
           "homePage": "Home Page",
           "history": "History",
           "favorites": "Favorites",
