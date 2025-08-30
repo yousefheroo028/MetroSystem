@@ -37,54 +37,83 @@ class _RoutePageState extends State<RoutePage> {
                 itemCount: route.length,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return TimelineTile(
-                    isFirst: index == 0,
-                    isLast: index == route.length - 1,
-                    indicatorStyle: IndicatorStyle(
-                      width: 30,
-                      color: colorScheme.primary,
-                      iconStyle: IconStyle(
-                        iconData: route[index][0].lineNumber == 0
-                            ? Icons.looks_one_outlined
-                            : route[index][0].lineNumber == 1
-                                ? Icons.looks_two_outlined
-                                : route[index][0].lineNumber == 2
-                                    ? Icons.looks_3_outlined
-                                    : Icons.train_outlined,
-                        fontSize: 24.0,
-                        color: colorScheme.secondaryContainer,
-                      ),
-                    ),
-                    beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                    afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                    endChild: Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      color: colorScheme.surface.withValues(alpha: 0.9),
-                      shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: route[index]
-                              .map(
-                                (station) => Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                  child: Text(
-                                    station.name,
-                                    style: GoogleFonts.merriweather(
-                                      fontSize: 16,
-                                      color: colorScheme.onSurface,
-                                      fontWeight: FontWeight.w600,
+                  return Column(
+                    children: [
+                      TimelineTile(
+                        isFirst: index == 0,
+                        isLast: index == route.length - 1,
+                        indicatorStyle: IndicatorStyle(
+                          width: 30,
+                          color: colorScheme.primary,
+                          iconStyle: IconStyle(
+                            iconData: route[index][0].lineNumber == 0
+                                ? Icons.looks_one_outlined
+                                : route[index][0].lineNumber == 1
+                                    ? Icons.looks_two_outlined
+                                    : route[index][0].lineNumber == 2
+                                        ? Icons.looks_3_outlined
+                                        : Icons.train_outlined,
+                            fontSize: 24.0,
+                            color: colorScheme.secondaryContainer,
+                          ),
+                        ),
+                        beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                        afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                        endChild: Card(
+                          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          color: colorScheme.surface.withValues(alpha: 0.9),
+                          shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: route[index]
+                                  .map(
+                                    (station) => Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      child: Text(
+                                        station.name,
+                                        style: GoogleFonts.merriweather(
+                                          fontSize: 16,
+                                          color: colorScheme.onSurface,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
+                                  )
+                                  .toList()
+                                  .sublist(0, route[index].length - 1),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      if (index < route.length - 1)
+                        TimelineTile(
+                          isFirst: index == 0,
+                          isLast: index == route.length - 1,
+                          indicatorStyle: IndicatorStyle(
+                            width: 30,
+                            color: colorScheme.primary,
+                            iconStyle: IconStyle(
+                              iconData: Icons.compare_arrows,
+                              fontSize: 24.0,
+                              color: colorScheme.secondaryContainer,
+                            ),
+                          ),
+                          beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                          afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                          endChild: Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            color: colorScheme.surface.withValues(alpha: 0.9),
+                            shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            elevation: 3,
+                            child: Text(route[index].last.name),
+                          ),
+                        )
+                    ],
                   );
                 },
               ),
