@@ -109,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                   spacing: 8.0,
                   children: [
                     Expanded(
-                      flex: 10,
                       child: ElevatedButton.icon(
                         onPressed: _controller.isFound.value
                             ? null
@@ -132,7 +131,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Expanded(
-                      flex: 9,
                       child: ElevatedButton.icon(
                         onPressed: !_controller.fromIsEntered.value
                             ? null
