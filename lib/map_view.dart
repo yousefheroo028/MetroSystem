@@ -15,6 +15,7 @@ class MapView extends StatelessWidget {
         imageProvider: AssetImage(Get.arguments),
         filterQuality: FilterQuality.high,
         minScale: PhotoViewComputedScale.contained,
+        wantKeepAlive: true,
         maxScale: PhotoViewComputedScale.covered * 5,
       ),
     );
