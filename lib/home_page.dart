@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 32.0),
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
           child: Column(
             spacing: 8.0,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -266,6 +266,7 @@ class _HomePageState extends State<HomePage> {
               () => const MapView(),
               arguments: "assets/images/metroMap.jpg",
               transition: Transition.cupertino,
+              duration: const Duration(milliseconds: 800),
             );
           },
           child: Text('map'.tr),

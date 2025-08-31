@@ -15,30 +15,30 @@ class RoutePage extends StatefulWidget {
 }
 
 class _RoutePageState extends State<RoutePage> {
-  final stations = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
+  static final _stations = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
+  static final _helwanLine = _stations.where((station) => station.lineNumber == 0).toList();
+  static final _elmounibLine = _stations.where((station) => station.lineNumber == 1).toList();
+  static final _adlyMansourBranch1 =
+      _stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
+  static final _adlyMansourBranch2 =
+      _stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+  static final _capitalTrainLineBranch1 =
+      _stations.where((station) => station.lineNumber == 3 && (station.branch == 0 || station.branch == null)).toList();
+  static final _capitalTrainLineBranch2 =
+      _stations.where((station) => station.lineNumber == 3 && (station.branch == 1 || station.branch == null)).toList();
+  static final lines = [
+    _helwanLine,
+    _elmounibLine,
+    _adlyMansourBranch1,
+    _adlyMansourBranch2,
+    _capitalTrainLineBranch1,
+    _capitalTrainLineBranch2
+  ];
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final route = shortestRoute(Get.arguments[0], Get.arguments[1]);
-    final directions = [
-      [
-        stations.where((station) => station.lineNumber == 0).toList().first.name,
-        stations.where((station) => station.lineNumber == 0).toList().last.name
-      ],
-      [
-        stations.where((station) => station.lineNumber == 1).toList().first.name,
-        stations.where((station) => station.lineNumber == 1).toList().last.name
-      ],
-      [
-        stations.where((station) => station.lineNumber == 2).toList().first.name,
-        stations.where((station) => station.lineNumber == 2).toList().last.name
-      ],
-      [
-        stations.where((station) => station.lineNumber == 3).toList().first.name,
-        stations.where((station) => station.lineNumber == 3).toList().last.name
-      ],
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -55,66 +55,26 @@ class _RoutePageState extends State<RoutePage> {
               child: ListView.builder(
                 itemCount: route.length,
                 physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    TimelineTile(
-                      isFirst: index == 0,
-                      isLast: index == route.length - 1,
-                      indicatorStyle: IndicatorStyle(
-                        width: 30,
-                        color: colorScheme.primary,
-                        iconStyle: IconStyle(
-                          iconData: route[index][0].lineNumber == 0
-                              ? Icons.looks_one_outlined
-                              : route[index][0].lineNumber == 1
-                                  ? Icons.looks_two_outlined
-                                  : route[index][0].lineNumber == 2
-                                      ? Icons.looks_3_outlined
-                                      : Icons.train_outlined,
-                          fontSize: 24.0,
-                          color: colorScheme.secondaryContainer,
-                        ),
-                      ),
-                      beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                      afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                      endChild: Card(
-                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        color: colorScheme.surface.withValues(alpha: 0.9),
-                        shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: route[index]
-                                .map(
-                                  (station) => Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                    child: Text(
-                                      station.name,
-                                      style: GoogleFonts.merriweather(
-                                        fontSize: 16,
-                                        color: colorScheme.onSurface,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    if (index < route.length - 1)
+                itemBuilder: (context, index) {
+                  final secondlineNumber =
+                      index < route.length - 1 ? route[index + 1].first.lineNumber + (route[index + 1].first.branch ?? 0) : 0;
+
+                  return Column(
+                    children: [
                       TimelineTile(
                         isFirst: index == 0,
-                        isLast: index == route.length - 2,
+                        isLast: index == route.length - 1,
                         indicatorStyle: IndicatorStyle(
                           width: 30,
                           color: colorScheme.primary,
                           iconStyle: IconStyle(
-                            iconData: Icons.compare_arrows,
+                            iconData: route[index][0].lineNumber == 0
+                                ? Icons.looks_one_outlined
+                                : route[index][0].lineNumber == 1
+                                    ? Icons.looks_two_outlined
+                                    : route[index][0].lineNumber == 2
+                                        ? Icons.looks_3_outlined
+                                        : Icons.train_outlined,
                             fontSize: 24.0,
                             color: colorScheme.secondaryContainer,
                           ),
@@ -129,29 +89,77 @@ class _RoutePageState extends State<RoutePage> {
                           elevation: 3,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              'exchangeStation'.trParams(
-                                {
-                                  "secondLineNumber": route[index].last.lineNumber == 3
-                                      ? Get.locale?.languageCode == 'ar'
-                                          ? "لخط قطار العاصمة"
-                                          : "Capital Train Line"
-                                      : '${Get.locale?.languageCode == 'ar' ? "للخط ال" : "Line"} ${route[index].last.lineNumber}',
-                                  "station": route[index].last.name,
-                                  "direction": directions[route[index + 1].first.lineNumber][0]
-                                },
-                              ),
-                              style: GoogleFonts.merriweather(
-                                fontSize: 16,
-                                color: colorScheme.onSurface,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: route[index]
+                                  .map(
+                                    (station) => Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      child: Text(
+                                        station.name,
+                                        style: GoogleFonts.merriweather(
+                                          fontSize: 16,
+                                          color: colorScheme.onSurface,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
                             ),
                           ),
                         ),
-                      )
-                  ],
-                ),
+                      ),
+                      if (index < route.length - 1)
+                        TimelineTile(
+                          isFirst: index == 0,
+                          isLast: index == route.length - 2,
+                          indicatorStyle: IndicatorStyle(
+                            width: 30,
+                            color: colorScheme.primary,
+                            iconStyle: IconStyle(
+                              iconData: Icons.compare_arrows,
+                              fontSize: 24.0,
+                              color: colorScheme.secondaryContainer,
+                            ),
+                          ),
+                          beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                          afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                          endChild: Card(
+                            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            color: colorScheme.surface.withValues(alpha: 0.9),
+                            shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            elevation: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                'exchangeStation'.trParams(
+                                  {
+                                    "secondLineNumber": route[index].last.lineNumber == 3
+                                        ? Get.locale?.languageCode == 'ar'
+                                            ? "لخط قطار العاصمة"
+                                            : "Capital Train Line"
+                                        : '${Get.locale?.languageCode == 'ar' ? "للخط ال" : "Line"} ${route[index + 1].first.lineNumber + 1}',
+                                    "station": route[index].last.name,
+                                    "direction": lines[secondlineNumber].indexOf(route[index].last) <
+                                            lines[secondlineNumber].indexOf(route[index + 1].first)
+                                        ? lines[secondlineNumber].last.name
+                                        : lines[secondlineNumber].first.name
+                                  },
+                                ),
+                                style: GoogleFonts.merriweather(
+                                  fontSize: 16,
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -162,29 +170,11 @@ class _RoutePageState extends State<RoutePage> {
 
   List<List<Station>> shortestRoute(String currentStation, String targetedStation) {
     final Map<String, List<String>> network = {};
-    final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
-    final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
-    final adlyMansourBranch1 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
-    final adlyMansourBranch2 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
-    final capitalTrainLineBranch1 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 0 || station.branch == null)).toList();
-    final capitalTrainLineBranch2 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 1 || station.branch == null)).toList();
-    final lines = [
-      helwanLine,
-      elmounibLine,
-      adlyMansourBranch1,
-      adlyMansourBranch2,
-      capitalTrainLineBranch1,
-      capitalTrainLineBranch2
-    ];
     List<List<Station>> path = [];
-    final firstlineNumber = stations.firstWhere((station) => station.name == currentStation).lineNumber +
-        (stations.firstWhere((station) => station.name == currentStation).branch ?? 0);
-    final secondlineNumber = stations.firstWhere((station) => station.name == targetedStation).lineNumber +
-        (stations.firstWhere((station) => station.name == targetedStation).branch ?? 0);
+    final firstlineNumber = _stations.firstWhere((station) => station.name == currentStation).lineNumber +
+        (_stations.firstWhere((station) => station.name == currentStation).branch ?? 0);
+    final secondlineNumber = _stations.firstWhere((station) => station.name == targetedStation).lineNumber +
+        (_stations.firstWhere((station) => station.name == targetedStation).branch ?? 0);
     if (firstlineNumber == secondlineNumber) {
       final firstIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(currentStation);
       final seconddIndex = lines[firstlineNumber].map((station) => station.name).toList().indexOf(targetedStation);
@@ -235,12 +225,12 @@ class _RoutePageState extends State<RoutePage> {
           ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة", "عدلي منصور"]
           : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University", "Adly Mansour"];
       while (current != null) {
-        temp.insert(0, stations.firstWhere((st) => st.name == current));
-        final lineN = stations.firstWhere((st) => st.name == current).lineNumber;
+        temp.insert(0, _stations.firstWhere((st) => st.name == current));
+        final lineN = _stations.firstWhere((st) => st.name == current).lineNumber;
         current = previous[current];
         if (current != null && previous[current] != null) {
           if (transferStations.contains(current) &&
-              lineN != stations.firstWhere((st) => st.name == previous[current]).lineNumber) {
+              lineN != _stations.firstWhere((st) => st.name == previous[current]).lineNumber) {
             path.insert(0, temp.toList());
             temp.clear();
           }
