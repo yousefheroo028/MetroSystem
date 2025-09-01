@@ -399,9 +399,7 @@ class _RouteInfo extends StatelessWidget {
     }
     final double metroTicketPrice;
     final double capitalTicketPrice;
-    if (noOfMetroStations == 0) {
-      metroTicketPrice = 0.0;
-    } else if (noOfMetroStations <= 9) {
+    if (noOfMetroStations <= 9) {
       metroTicketPrice = 8.0;
     } else if (noOfMetroStations <= 16) {
       metroTicketPrice = 10.0;
@@ -410,7 +408,9 @@ class _RouteInfo extends StatelessWidget {
     } else {
       metroTicketPrice = 20.0;
     }
-    if (noOfCapitalTrainStations <= 3 && noOfCapitalTrainStations > 0) {
+    if (noOfCapitalTrainStations == 0) {
+      capitalTicketPrice = 0;
+    } else if (noOfCapitalTrainStations <= 3) {
       capitalTicketPrice = 10.0;
     } else if (noOfCapitalTrainStations <= 7) {
       capitalTicketPrice = 15.0;
