@@ -37,7 +37,7 @@ class Languages extends Translations {
           "nearestStationForAddress": "ايه أقرب محطة للعنوان دا؟",
           "routeLine": "خط السير",
           "noOfStations": "عدد المحطات:\n@stations @number",
-          "Price": "سعر التذكرة للفرد:\n@price @currency",
+          "Price": "سعر تذكرة @line:\n@price @currency",
           "startOfRoute": "هتركب محطة @station اتجاه @direction"
         },
         'en_US': {
@@ -74,7 +74,7 @@ class Languages extends Translations {
           "exchangeStation": "From @station, you will exchange @secondLineNumber @direction Direction",
           "expectedTime": "Expected Time:\n@timem",
           "noOfStations": "Number of Stations:\n@stations @number",
-          "Price": "Price of each passenger:\n@price @currency",
+          "Price": "Price of @line Ticket:\n@price @currency",
           "startOfRoute": "You will Start at @station Station @direction Direction",
           "routeCompleted": "You Reached Your Destination"
         },

@@ -17,8 +17,8 @@ class Entry extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       translations: Languages(),
-      locale: Get.deviceLocale,
-      fallbackLocale: const Locale('ar', 'AE'),
+      locale: const Locale('ar', 'AE'),
+      fallbackLocale: const Locale('en', 'US'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.lightBlueAccent,
@@ -73,7 +73,6 @@ class Entry extends StatelessWidget {
           ),
         ),
       ),
-
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.deepPurpleAccent,
@@ -125,12 +124,7 @@ class Entry extends StatelessWidget {
           ),
         ),
       ),
-
-      // ---------------------- //
-      //   Theme Mode Control   //
-      // ---------------------- //
       themeMode: MediaQuery.of(context).platformBrightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
-
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
