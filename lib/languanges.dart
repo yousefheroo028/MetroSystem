@@ -30,13 +30,16 @@ class Languages extends Translations {
           "history": "سجل الرحلات",
           "favorites": "رحلاتي المفضلة",
           "settings": "الإعدادات",
+          "routeCompleted": "لقد وصلت وجهتك",
           "about": "عن البرنامج",
+          "summarize": "لخص الرحلة",
           "locationOfStation": "ازاي أروح للمحطة دي؟",
           "locationOfAddress": "ازاي أروح للعنوان دا؟",
           "nearestStationForAddress": "ايه أقرب محطة للعنوان دا؟",
           "routeLine": "خط السير",
           "noOfStations": "عدد المحطات:\n@stations @number",
-          "Price": "سعر التذكرة للفرد:\n@price @currency"
+          "Price": "سعر التذكرة للفرد:\n@price @currency",
+          "startOfRoute": "هتركب محطة @station اتجاه @direction"
         },
         'en_US': {
           "nearestStation": "Nearest Station",
@@ -57,6 +60,7 @@ class Languages extends Translations {
           "needLocationPermission": "We need Location Permissions to find Nearest Station to you.",
           "map": "Metro Map",
           "targetedStation": "Targeted Station",
+          "summarize": "Summarize the Route",
           "addressHint": "Address you Want to Go",
           "from": "from",
           "to": "to",
@@ -72,7 +76,9 @@ class Languages extends Translations {
           "exchangeStation": "From @station, you will exchange @secondLineNumber @direction Direction",
           "expectedTime": "Expected Time:\n@timem",
           "noOfStations": "Number of Stations:\n@stations @number",
-          "Price": "Price of each passenger:\n@price @currency"
+          "Price": "Price of each passenger:\n@price @currency",
+          "startOfRoute": "You will Start at @station Station @direction Direction",
+          "routeCompleted": "You Reached Your Destination"
         },
       };
 }

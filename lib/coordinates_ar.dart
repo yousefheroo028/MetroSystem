@@ -37,7 +37,7 @@ const stations = <Station>[
   Station(name: 'الزهراء', lineNumber: 0, latitude: 29.995479008649994, longitude: 31.23114261084708),
   Station(name: 'مار جرجس', lineNumber: 0, latitude: 30.006085517113085, longitude: 31.229560077045114),
   Station(name: 'الملك الصالح', lineNumber: 0, latitude: 30.01770823102937, longitude: 31.231209945452218),
-  Station(name: 'السيجة زينب', lineNumber: 0, latitude: 30.02928621683731, longitude: 31.235378293669967),
+  Station(name: 'السيدة زينب', lineNumber: 0, latitude: 30.02928621683731, longitude: 31.235378293669967),
   Station(name: 'سعد زغلول', lineNumber: 0, latitude: 30.036995417539316, longitude: 31.238291241296075),
   Station(name: 'السادات', lineNumber: 0, latitude: 30.044144315827513, longitude: 31.234341955551574),
   Station(name: 'جمال عبد الناصر', lineNumber: 0, latitude: 30.05350437670406, longitude: 31.238575323162458),
