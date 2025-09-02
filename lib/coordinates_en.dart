@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart' show AssetImage;
-
 import 'station.dart';
 
 const stations = <Station>[
@@ -58,18 +56,18 @@ const stations = <Station>[
   Station(name: 'Ezbet El Nakhl', lineNumber: 0, latitude: 30.139308236948036, longitude: 31.32425628708358),
   Station(name: 'El Marg', lineNumber: 0, latitude: 30.152079221498774, longitude: 31.335608453250845),
   Station(name: 'New El Marg', lineNumber: 0, latitude: 30.16364756817454, longitude: 31.338452302596988),
-  Station(branch: 2, name: 'Arts and Culture City', lineNumber: 3, latitude: 30.014292976156057, longitude: 31.727213411342582),
-  Station(branch: 2, name: 'Capital Airport', lineNumber: 3, latitude: 30.07684773011866, longitude: 31.784476008194886),
-  Station(branch: 2, name: 'Hadayek Al Assema', lineNumber: 3, latitude: 30.136819388736544, longitude: 31.807204818333343),
-  Station(branch: 2, name: 'El Robaikey', lineNumber: 3, latitude: 30.16699743474728, longitude: 31.753444534553207),
-  Station(branch: 1, name: 'Knowledge City', lineNumber: 3, latitude: 30.23099522560194, longitude: 31.691957733644745),
-  Station(branch: 1, name: 'Industrial Park', lineNumber: 3, latitude: 30.204079247893954, longitude: 31.71573203735148),
-  Station(name: 'Badr', lineNumber: 3, latitude: 30.17526994316704, longitude: 31.716011673901015),
-  Station(name: 'New Heliopolis', lineNumber: 3, latitude: 30.184098951307753, longitude: 31.652953353112835),
-  Station(name: 'El Shorouk', lineNumber: 3, latitude: 30.179968443870738, longitude: 31.606565573184042),
-  Station(name: 'Future', lineNumber: 3, latitude: 30.17336437471482, longitude: 31.55487701798197),
-  Station(name: 'Obour', lineNumber: 3, latitude: 30.163115002586654, longitude: 31.481538205386954),
-  Station(name: 'Adly Mansour', lineNumber: 3, latitude: 30.14644061768812, longitude: 31.421889469843254),
+  Station(branch: 1, name: 'Arts and Culture City', lineNumber: 4, latitude: 30.014292976156057, longitude: 31.727213411342582),
+  Station(branch: 1, name: 'Capital Airport', lineNumber: 4, latitude: 30.07684773011866, longitude: 31.784476008194886),
+  Station(branch: 1, name: 'Hadayek Al Assema', lineNumber: 4, latitude: 30.136819388736544, longitude: 31.807204818333343),
+  Station(branch: 1, name: 'El Robaikey', lineNumber: 4, latitude: 30.16699743474728, longitude: 31.753444534553207),
+  Station(branch: 0, name: 'Knowledge City', lineNumber: 4, latitude: 30.23099522560194, longitude: 31.691957733644745),
+  Station(branch: 0, name: 'Industrial Park', lineNumber: 4, latitude: 30.204079247893954, longitude: 31.71573203735148),
+  Station(name: 'Badr', lineNumber: 4, latitude: 30.17526994316704, longitude: 31.716011673901015),
+  Station(name: 'New Heliopolis', lineNumber: 4, latitude: 30.184098951307753, longitude: 31.652953353112835),
+  Station(name: 'El Shorouk', lineNumber: 4, latitude: 30.179968443870738, longitude: 31.606565573184042),
+  Station(name: 'Future', lineNumber: 4, latitude: 30.17336437471482, longitude: 31.55487701798197),
+  Station(name: 'Obour', lineNumber: 4, latitude: 30.163115002586654, longitude: 31.481538205386954),
+  Station(name: 'Adly Mansour', lineNumber: 4, latitude: 30.14644061768812, longitude: 31.421889469843254),
   Station(name: 'Adly Mansour', lineNumber: 2, latitude: 30.14644061768812, longitude: 31.421889469843254),
   Station(name: 'El Haykestep', lineNumber: 2, latitude: 30.14387464581446, longitude: 31.40460311019347),
   Station(name: 'Omar Ibn El Khattab', lineNumber: 2, latitude: 30.140344127371513, longitude: 31.394119207647915),
@@ -105,7 +103,3 @@ const stations = <Station>[
   Station(branch: 1, name: 'Bulaq El Dakrour', lineNumber: 2, latitude: 30.037556775795778, longitude: 31.19604873311913),
   Station(branch: 1, name: 'Cairo University', lineNumber: 2, latitude: 30.027726658291495, longitude: 31.201682897591088),
 ];
-
-class MetroMap {
-  static const AssetImage metroMap = AssetImage('assets/images/metroMap.webp');
-}

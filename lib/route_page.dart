@@ -28,9 +28,9 @@ class _RoutePageState extends State<RoutePage> {
     final adlyMansourBranch2 =
         stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
     final capitalTrainLineBranch1 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 1 || station.branch == null)).toList();
+        stations.where((station) => station.lineNumber == 4 && (station.branch == 0 || station.branch == null)).toList();
     final capitalTrainLineBranch2 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 2 || station.branch == null)).toList();
+        stations.where((station) => station.lineNumber == 4 && (station.branch == 1 || station.branch == null)).toList();
     final lines = [
       helwanLine,
       elmounibLine,
@@ -61,8 +61,9 @@ class _RoutePageState extends State<RoutePage> {
                   itemCount: route.length,
                   itemBuilder: (context, index) => Obx(
                     () {
-                      final secondLineNumber =
-                          index < route.length - 1 ? route[index + 1].first.lineNumber + (route[index + 1].first.branch ?? 0) : 0;
+                      final secondLineNumber = index < route.length - 1
+                          ? route[index + 1].last.lineNumber + (route[index + 1].last.branch ?? 0)
+                          : route[index].last.lineNumber + (route[index].last.branch ?? 0);
 
                       return Column(
                         children: [
@@ -91,8 +92,7 @@ class _RoutePageState extends State<RoutePage> {
                                     "startOfRoute".trParams(
                                       {
                                         "station": route[index].first.name,
-                                        "direction":
-                                            lines[route[index].first.lineNumber + (route[index].first.branch ?? 0)].last.name,
+                                        "direction": lines[secondLineNumber].last.name,
                                       },
                                     ),
                                     style: GoogleFonts.merriweather(
@@ -122,7 +122,7 @@ class _RoutePageState extends State<RoutePage> {
                             ),
                             beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
                             afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                            endChild: summarize.value
+                            endChild: summarize.value && route[index].length > 2
                                 ? Card(
                                     margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                     color: colorScheme.surface.withValues(alpha: 0.9),
@@ -147,7 +147,7 @@ class _RoutePageState extends State<RoutePage> {
                                                   ),
                                                 ),
                                                 const Text('.'),
-                                                if (route[index].length > 2) const Text('.'),
+                                                if (route[index].length > 3) const Text('.'),
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                                                   child: Text(
@@ -198,8 +198,7 @@ class _RoutePageState extends State<RoutePage> {
                                                 ),
                                               ),
                                             )
-                                            .toList()
-                                            .sublist(index == 0 ? 1 : 0),
+                                            .toList(),
                                       ),
                                     ),
                                   ),
@@ -310,9 +309,9 @@ class _RoutePageState extends State<RoutePage> {
     final adlyMansourBranch2 =
         stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
     final capitalTrainLineBranch1 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 1 || station.branch == null)).toList();
+        stations.where((station) => station.lineNumber == 4 && (station.branch == 0 || station.branch == null)).toList();
     final capitalTrainLineBranch2 =
-        stations.where((station) => station.lineNumber == 3 && (station.branch == 2 || station.branch == null)).toList();
+        stations.where((station) => station.lineNumber == 4 && (station.branch == 1 || station.branch == null)).toList();
     final lines = [
       helwanLine,
       elmounibLine,
@@ -404,12 +403,14 @@ class _RouteInfo extends StatelessWidget {
     int noOfMetroStations = 0;
     int noOfCapitalTrainStations = 0;
     for (final listOfStations in route) {
-      noOfMetroStations += listOfStations.where((station) => station.lineNumber < 3).length;
-      noOfCapitalTrainStations += listOfStations.where((station) => station.lineNumber == 3).length;
+      noOfMetroStations += listOfStations.where((station) => station.lineNumber < 4).length;
+      noOfCapitalTrainStations += listOfStations.where((station) => station.lineNumber == 4).length;
     }
     final double metroTicketPrice;
     final double capitalTicketPrice;
-    if (noOfMetroStations <= 9) {
+    if (noOfMetroStations == 0) {
+      metroTicketPrice = 0.0;
+    } else if (noOfMetroStations <= 9) {
       metroTicketPrice = 8.0;
     } else if (noOfMetroStations <= 16) {
       metroTicketPrice = 10.0;
@@ -474,31 +475,32 @@ class _RouteInfo extends StatelessWidget {
         ),
         Row(
           children: [
-            Expanded(
-              flex: 8,
-              child: Card(
-                surfaceTintColor: Theme.of(context).cardColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Text(
-                    'Price'.trParams(
-                      {
-                        "price": '${metroTicketPrice.toInt()}',
-                        "line": Get.locale?.languageCode == 'ar' ? "المترو" : "Metro",
-                        "currency": Get.locale?.languageCode == 'ar'
-                            ? metroTicketPrice <= 10.0
-                                ? "جنيهات"
-                                : "جنيهًا"
-                            : metroTicketPrice > 1.0
-                                ? "Pounds"
-                                : "Pound"
-                      },
+            if (noOfMetroStations > 0)
+              Expanded(
+                flex: 8,
+                child: Card(
+                  surfaceTintColor: Theme.of(context).cardColor,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Text(
+                      'Price'.trParams(
+                        {
+                          "price": '${metroTicketPrice.toInt()}',
+                          "line": Get.locale?.languageCode == 'ar' ? "المترو" : "Metro",
+                          "currency": Get.locale?.languageCode == 'ar'
+                              ? metroTicketPrice <= 10.0
+                                  ? "جنيهات"
+                                  : "جنيهًا"
+                              : metroTicketPrice > 1.0
+                                  ? "Pounds"
+                                  : "Pound"
+                        },
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-            ),
             if (noOfCapitalTrainStations > 0)
               Expanded(
                 flex: 10,
