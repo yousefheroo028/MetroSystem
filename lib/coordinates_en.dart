@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart' show AssetImage;
+
 import 'station.dart';
 
 const stations = <Station>[
@@ -103,3 +105,7 @@ const stations = <Station>[
   Station(branch: 1, name: 'Bulaq El Dakrour', lineNumber: 2, latitude: 30.037556775795778, longitude: 31.19604873311913),
   Station(branch: 1, name: 'Cairo University', lineNumber: 2, latitude: 30.027726658291495, longitude: 31.201682897591088),
 ];
+
+class MetroMap {
+  static const AssetImage metroMap = AssetImage('assets/images/metroMap.webp');
+}

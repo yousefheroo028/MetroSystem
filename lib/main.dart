@@ -21,11 +21,12 @@ class Entry extends StatelessWidget {
       fallbackLocale: const Locale('en', 'US'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.lightBlueAccent,
+          seedColor: const Color(0xFFD9534F), // أحمر أهدى
           brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: const Color(0xFFF5F5F5), // خلفية فاتحة وناعمة
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: const Color(0xFFD9534F),
           foregroundColor: Colors.white,
           titleTextStyle: GoogleFonts.oswald(
             fontSize: 22,
@@ -37,23 +38,27 @@ class Entry extends StatelessWidget {
           centerTitle: true,
         ),
         textTheme: TextTheme(
-          titleLarge: GoogleFonts.oswald(fontSize: 30, fontStyle: FontStyle.italic),
-          bodyMedium: GoogleFonts.merriweather(),
-          displaySmall: GoogleFonts.pacifico(),
+          titleLarge: GoogleFonts.oswald(
+            fontSize: 30,
+            fontStyle: FontStyle.italic,
+            color: const Color(0xFF3A3A3A), // رمادي داكن للنصوص
+          ),
+          bodyMedium: GoogleFonts.merriweather(color: const Color(0xFF3A3A3A)),
+          displaySmall: GoogleFonts.pacifico(color: const Color(0xFFD9534F)),
         ),
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: Colors.grey.withValues(alpha: 0.3),
+            fillColor: const Color(0xFFA6A6A6).withValues(alpha: 0.2), // رمادي فاتح ناعم
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none, // بدون بوردر واضح
+              borderSide: BorderSide.none,
             ),
             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           ),
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: const Color(0xFFD9534F),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -63,8 +68,7 @@ class Entry extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.lightBlueAccent,
-            // نفس لون الـAppBar
+            backgroundColor: const Color(0xFFD9534F),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -75,13 +79,12 @@ class Entry extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurpleAccent,
+          seedColor: const Color(0xFFD9534F),
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF121212),
+        scaffoldBackgroundColor: const Color(0xFF1C1C1C),
         appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFF1E1E2C),
-          // أغمق شوية عن البودي لكن مش أسود قوي
+          backgroundColor: const Color(0xFF3A3A3A),
           foregroundColor: Colors.white,
           titleTextStyle: GoogleFonts.oswald(
             fontSize: 22,
@@ -93,7 +96,7 @@ class Entry extends StatelessWidget {
           centerTitle: true,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.deepPurple.shade400, // بنفسجي هادي
+          backgroundColor: const Color(0xFFD9534F),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -103,7 +106,7 @@ class Entry extends StatelessWidget {
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: const Color(0xFF1E1E1E).withValues(alpha: 0.7), // رمادي أفتح شوية
+            fillColor: const Color(0xFF3A3A3A).withValues(alpha: 0.5),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
@@ -114,8 +117,7 @@ class Entry extends StatelessWidget {
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.deepPurpleAccent,
-            // نفس لون الفلوتينج
+            backgroundColor: const Color(0xFFD9534F),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

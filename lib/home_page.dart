@@ -205,7 +205,6 @@ class _HomePageState extends State<HomePage> {
                         hintText: 'addressHint'.tr,
                       ),
                       onChanged: (value) {
-                        _targetedAddressController.text = value;
                         _controller.targetedIsEntered.value = _targetedAddressController.text.isNotEmpty;
                       },
                     ),
@@ -256,16 +255,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      floatingActionButton: SizedBox(
-        width: 100,
+      floatingActionButton: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: 100.0,
+        ),
         child: FloatingActionButton(
           onPressed: () {
-            Get.to(
-              () => const MapView(),
-              arguments: "assets/images/metroMap.jpg",
-              transition: Transition.cupertino,
-              duration: const Duration(milliseconds: 800),
-            );
+            Get.to(() => const MapView(), transition: Transition.cupertino);
           },
           child: Text('map'.tr),
         ),

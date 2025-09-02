@@ -12,10 +12,9 @@ class MapView extends StatelessWidget {
         title: Text('map'.tr),
       ),
       body: PhotoView(
-        imageProvider: AssetImage(Get.arguments),
+        imageProvider: const AssetImage('assets/images/metroMap.webp'),
         filterQuality: FilterQuality.high,
         minScale: PhotoViewComputedScale.contained,
-        wantKeepAlive: true,
         maxScale: PhotoViewComputedScale.covered * 5,
       ),
     );

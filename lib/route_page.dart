@@ -59,83 +59,109 @@ class _RoutePageState extends State<RoutePage> {
                 splashColor: Colors.transparent,
                 child: ListView.builder(
                   itemCount: route.length,
-                  itemBuilder: (context, index) {
-                    return Obx(
-                      () {
-                        final secondLineNumber =
-                            index < route.length - 1 ? route[index + 1].last.lineNumber + (route[index + 1].last.branch ?? 0) : 0;
+                  itemBuilder: (context, index) => Obx(
+                    () {
+                      final secondLineNumber =
+                          index < route.length - 1 ? route[index + 1].first.lineNumber + (route[index + 1].first.branch ?? 0) : 0;
 
-                        return Column(
-                          children: [
-                            if (index == 0)
-                              TimelineTile(
-                                isFirst: index == 0,
-                                indicatorStyle: IndicatorStyle(
-                                  width: 30,
-                                  color: colorScheme.primary,
-                                  iconStyle: IconStyle(
-                                    iconData: Icons.my_location,
-                                    fontSize: 24.0,
-                                    color: colorScheme.secondaryContainer,
-                                  ),
-                                ),
-                                afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                                endChild: Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  color: colorScheme.surface.withValues(alpha: 0.9),
-                                  shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      "startOfRoute".trParams(
-                                        {
-                                          "station": route[index].first.name,
-                                          "direction":
-                                              lines[route[index].first.lineNumber + (route[index].first.branch ?? 0)].last.name,
-                                        },
-                                      ),
-                                      style: GoogleFonts.merriweather(
-                                        fontSize: 16,
-                                        color: colorScheme.onSurface,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                      return Column(
+                        children: [
+                          if (index == 0)
                             TimelineTile(
+                              isFirst: index == 0,
                               indicatorStyle: IndicatorStyle(
                                 width: 30,
                                 color: colorScheme.primary,
                                 iconStyle: IconStyle(
-                                  iconData: route[index][0].lineNumber == 0
-                                      ? Icons.looks_one_outlined
-                                      : route[index][0].lineNumber == 1
-                                          ? Icons.looks_two_outlined
-                                          : route[index][0].lineNumber == 2
-                                              ? Icons.looks_3_outlined
-                                              : Icons.train_outlined,
+                                  iconData: Icons.my_location,
                                   fontSize: 24.0,
                                   color: colorScheme.secondaryContainer,
                                 ),
                               ),
-                              beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
                               afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                              endChild: summarize.value
-                                  ? Card(
-                                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      color: colorScheme.surface.withValues(alpha: 0.9),
-                                      shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      elevation: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
+                              endChild: Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                color: colorScheme.surface.withValues(alpha: 0.9),
+                                shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    "startOfRoute".trParams(
+                                      {
+                                        "station": route[index].first.name,
+                                        "direction":
+                                            lines[route[index].first.lineNumber + (route[index].first.branch ?? 0)].last.name,
+                                      },
+                                    ),
+                                    style: GoogleFonts.merriweather(
+                                      fontSize: 16,
+                                      color: colorScheme.onSurface,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          TimelineTile(
+                            indicatorStyle: IndicatorStyle(
+                              width: 30,
+                              color: colorScheme.primary,
+                              iconStyle: IconStyle(
+                                iconData: route[index][0].lineNumber == 0
+                                    ? Icons.looks_one_outlined
+                                    : route[index][0].lineNumber == 1
+                                        ? Icons.looks_two_outlined
+                                        : route[index][0].lineNumber == 2
+                                            ? Icons.looks_3_outlined
+                                            : Icons.train_outlined,
+                                fontSize: 24.0,
+                                color: colorScheme.secondaryContainer,
+                              ),
+                            ),
+                            beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                            afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                            endChild: summarize.value
+                                ? Card(
+                                    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    color: colorScheme.surface.withValues(alpha: 0.9),
+                                    shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: route[index].length > 1
+                                          ? Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                  child: Text(
+                                                    route[index].first.name,
+                                                    style: GoogleFonts.merriweather(
+                                                      fontSize: 16,
+                                                      color: colorScheme.onSurface,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Text('.'),
+                                                if (route[index].length > 2) const Text('.'),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                  child: Text(
+                                                    route[index].last.name,
+                                                    style: GoogleFonts.merriweather(
+                                                      fontSize: 16,
+                                                      color: colorScheme.onSurface,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : Padding(
                                               padding: const EdgeInsets.symmetric(vertical: 4.0),
                                               child: Text(
                                                 route[index].first.name,
@@ -146,141 +172,125 @@ class _RoutePageState extends State<RoutePage> {
                                                 ),
                                               ),
                                             ),
-                                            const Text('.'),
-                                            const Text('.'),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                              child: Text(
-                                                route[index].last.name,
-                                                style: GoogleFonts.merriweather(
-                                                  fontSize: 16,
-                                                  color: colorScheme.onSurface,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  : Card(
-                                      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      color: colorScheme.surface.withValues(alpha: 0.9),
-                                      shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      elevation: 3,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: route[index]
-                                              .map(
-                                                (station) => Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                                  child: Text(
-                                                    station.name,
-                                                    style: GoogleFonts.merriweather(
-                                                      fontSize: 16,
-                                                      color: colorScheme.onSurface,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
+                                    ),
+                                  )
+                                : Card(
+                                    margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    color: colorScheme.surface.withValues(alpha: 0.9),
+                                    shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    elevation: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: route[index]
+                                            .map(
+                                              (station) => Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                child: Text(
+                                                  station.name,
+                                                  style: GoogleFonts.merriweather(
+                                                    fontSize: 16,
+                                                    color: colorScheme.onSurface,
+                                                    fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
-                                              )
-                                              .toList()
-                                              .sublist(index == 0 ? 1 : 0),
-                                        ),
+                                              ),
+                                            )
+                                            .toList()
+                                            .sublist(index == 0 ? 1 : 0),
                                       ),
                                     ),
+                                  ),
+                          ),
+                          if (index < route.length - 1)
+                            TimelineTile(
+                              indicatorStyle: IndicatorStyle(
+                                width: 30,
+                                color: colorScheme.primary,
+                                iconStyle: IconStyle(
+                                  iconData: Icons.compare_arrows,
+                                  fontSize: 24.0,
+                                  color: colorScheme.secondaryContainer,
+                                ),
+                              ),
+                              beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                              afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                              endChild: Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                color: colorScheme.surface.withValues(alpha: 0.9),
+                                shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    'exchangeStation'.trParams(
+                                      {
+                                        "secondLineNumber": route[index].last.lineNumber == 3
+                                            ? Get.locale?.languageCode == 'ar'
+                                                ? "لخط قطار العاصمة"
+                                                : "Capital Train Line"
+                                            : '${Get.locale?.languageCode == 'ar' ? "للخط ال" : "Line"} ${route[index + 1].first.lineNumber + 1}',
+                                        "station": route[index].last.name,
+                                        "direction": lines[secondLineNumber]
+                                                    .map((station) => station.name)
+                                                    .toList()
+                                                    .indexOf(route[index].last.name) <
+                                                lines[secondLineNumber]
+                                                    .map((station) => station.name)
+                                                    .toList()
+                                                    .indexOf(route[index + 1].first.name)
+                                            ? lines[secondLineNumber].last.name
+                                            : lines[secondLineNumber].first.name
+                                      },
+                                    ),
+                                    style: GoogleFonts.merriweather(
+                                      fontSize: 16,
+                                      color: colorScheme.onSurface,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                            if (index < route.length - 1)
-                              TimelineTile(
-                                indicatorStyle: IndicatorStyle(
-                                  width: 30,
-                                  color: colorScheme.primary,
-                                  iconStyle: IconStyle(
-                                    iconData: Icons.compare_arrows,
-                                    fontSize: 24.0,
-                                    color: colorScheme.secondaryContainer,
-                                  ),
+                          if (index == route.length - 1)
+                            TimelineTile(
+                              isLast: index == route.length - 1,
+                              indicatorStyle: IndicatorStyle(
+                                width: 30,
+                                color: colorScheme.primary,
+                                iconStyle: IconStyle(
+                                  iconData: Icons.location_on_outlined,
+                                  fontSize: 24.0,
+                                  color: colorScheme.secondaryContainer,
                                 ),
-                                beforeLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                                afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                                endChild: Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  color: colorScheme.surface.withValues(alpha: 0.9),
-                                  shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      'exchangeStation'.trParams(
-                                        {
-                                          "secondLineNumber": route[index].last.lineNumber == 3
-                                              ? Get.locale?.languageCode == 'ar'
-                                                  ? "لخط قطار العاصمة"
-                                                  : "Capital Train Line"
-                                              : '${Get.locale?.languageCode == 'ar' ? "للخط ال" : "Line"} ${route[index + 1].first.lineNumber + 1}',
-                                          "station": route[index].last.name,
-                                          "direction": lines[secondLineNumber]
-                                                      .map((station) => station.name)
-                                                      .toList()
-                                                      .indexOf(route[index].last.name) <
-                                                  lines[secondLineNumber]
-                                                      .map((station) => station.name)
-                                                      .toList()
-                                                      .indexOf(route[index + 1].first.name)
-                                              ? lines[secondLineNumber].last.name
-                                              : lines[secondLineNumber].first.name
-                                        },
-                                      ),
-                                      style: GoogleFonts.merriweather(
-                                        fontSize: 16,
-                                        color: colorScheme.onSurface,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                              ),
+                              afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
+                              endChild: Card(
+                                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                color: colorScheme.surface.withValues(alpha: 0.9),
+                                shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    "routeCompleted".tr,
+                                    style: GoogleFonts.merriweather(
+                                      fontSize: 16,
+                                      color: colorScheme.onSurface,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ),
-                            if (index == route.length - 1)
-                              TimelineTile(
-                                isLast: index == route.length - 1,
-                                indicatorStyle: IndicatorStyle(
-                                  width: 30,
-                                  color: colorScheme.primary,
-                                  iconStyle: IconStyle(
-                                    iconData: Icons.location_on_outlined,
-                                    fontSize: 24.0,
-                                    color: colorScheme.secondaryContainer,
-                                  ),
-                                ),
-                                afterLineStyle: LineStyle(color: colorScheme.primary, thickness: 3),
-                                endChild: Card(
-                                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  color: colorScheme.surface.withValues(alpha: 0.9),
-                                  shadowColor: colorScheme.shadow.withValues(alpha: 0.2),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                  elevation: 3,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      "routeCompleted".tr,
-                                      style: GoogleFonts.merriweather(
-                                        fontSize: 16,
-                                        color: colorScheme.onSurface,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
