@@ -15,30 +15,64 @@ class RoutePage extends StatefulWidget {
 }
 
 class _RoutePageState extends State<RoutePage> {
+  List<String> transferStations = Get.locale?.languageCode == 'ar'
+      ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة", "عدلي منصور"]
+      : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University", "Adly Mansour"];
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final route = shortestRoute(Get.arguments[0], Get.arguments[1]);
+    for (int i = 1; i < route.length; i++) {
+      if (route[i - 1].first.lineNumber == route[i].first.lineNumber || (route[i].length == 1 && transferStations.contains(route[i].first.name))) {
+        for (final station in route[i]) {
+          route[i - 1].add(station);
+        }
+        route.removeAt(i);
+        i--;
+      }
+    }
     final summarize = true.obs;
     final stations = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
     final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
     final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
-    final adlyMansourBranch1 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
-    final adlyMansourBranch2 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+    final adlyMansourBranch1 = stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
+    final adlyMansourBranch2 = stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
     final capitalTrainLineBranch1 =
         stations.where((station) => station.lineNumber == 4 && (station.branch == 0 || station.branch == null)).toList();
     final capitalTrainLineBranch2 =
         stations.where((station) => station.lineNumber == 4 && (station.branch == 1 || station.branch == null)).toList();
-    final lines = [
-      helwanLine,
-      elmounibLine,
-      adlyMansourBranch1,
-      adlyMansourBranch2,
-      capitalTrainLineBranch1,
-      capitalTrainLineBranch2
-    ];
+
+    // Helper function to get the correct line list for a station
+    List<Station> getLineForStation(Station station) {
+      switch (station.lineNumber) {
+        case 0:
+          return helwanLine;
+        case 1:
+          return elmounibLine;
+        case 2:
+          if (station.branch == 0) {
+            return adlyMansourBranch1;
+          } else {
+            return adlyMansourBranch2;
+          }
+        case 4:
+          if (station.branch == 0) {
+            return capitalTrainLineBranch1;
+          } else {
+            return capitalTrainLineBranch2;
+          }
+      }
+      return <Station>[];
+    }
+
+    // Helper function to get direction
+    String getDirection(Station fromStation, Station toStation) {
+      final currentLine = getLineForStation(fromStation);
+      final fromIndex = currentLine.indexWhere((s) => s.name == fromStation.name);
+      final toIndex = currentLine.indexWhere((s) => s.name == toStation.name);
+
+      return fromIndex < toIndex ? currentLine.last.name : currentLine.first.name;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -61,10 +95,6 @@ class _RoutePageState extends State<RoutePage> {
                   itemCount: route.length,
                   itemBuilder: (context, index) => Obx(
                     () {
-                      final secondLineNumber = index < route.length - 1
-                          ? route[index + 1].last.lineNumber + (route[index + 1].last.branch ?? 0)
-                          : route[index].last.lineNumber + (route[index].last.branch ?? 0);
-
                       return Column(
                         children: [
                           if (index == 0)
@@ -92,7 +122,7 @@ class _RoutePageState extends State<RoutePage> {
                                     "startOfRoute".trParams(
                                       {
                                         "station": route[index].first.name,
-                                        "direction": lines[secondLineNumber].last.name,
+                                        "direction": getDirection(route[index].first, route[index].last),
                                       },
                                     ),
                                     style: GoogleFonts.merriweather(
@@ -227,22 +257,13 @@ class _RoutePageState extends State<RoutePage> {
                                   child: Text(
                                     'exchangeStation'.trParams(
                                       {
-                                        "secondLineNumber": route[index].last.lineNumber == 3
+                                        "secondLineNumber": route[index + 1].first.lineNumber == 4
                                             ? Get.locale?.languageCode == 'ar'
                                                 ? "لخط قطار العاصمة"
                                                 : "Capital Train Line"
                                             : '${Get.locale?.languageCode == 'ar' ? "للخط ال" : "Line"} ${route[index + 1].first.lineNumber + 1}',
                                         "station": route[index].last.name,
-                                        "direction": lines[secondLineNumber]
-                                                    .map((station) => station.name)
-                                                    .toList()
-                                                    .indexOf(route[index].last.name) <
-                                                lines[secondLineNumber]
-                                                    .map((station) => station.name)
-                                                    .toList()
-                                                    .indexOf(route[index + 1].first.name)
-                                            ? lines[secondLineNumber].last.name
-                                            : lines[secondLineNumber].first.name
+                                        "direction": getDirection(route[index + 1].first, route[index + 1].last),
                                       },
                                     ),
                                     style: GoogleFonts.merriweather(
@@ -304,22 +325,13 @@ class _RoutePageState extends State<RoutePage> {
     final stations = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
     final helwanLine = stations.where((station) => station.lineNumber == 0).toList();
     final elmounibLine = stations.where((station) => station.lineNumber == 1).toList();
-    final adlyMansourBranch1 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
-    final adlyMansourBranch2 =
-        stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
+    final adlyMansourBranch1 = stations.where((station) => station.lineNumber == 2 && (station.branch == 0 || station.branch == null)).toList();
+    final adlyMansourBranch2 = stations.where((station) => station.lineNumber == 2 && (station.branch == 1 || station.branch == null)).toList();
     final capitalTrainLineBranch1 =
         stations.where((station) => station.lineNumber == 4 && (station.branch == 0 || station.branch == null)).toList();
     final capitalTrainLineBranch2 =
         stations.where((station) => station.lineNumber == 4 && (station.branch == 1 || station.branch == null)).toList();
-    final lines = [
-      helwanLine,
-      elmounibLine,
-      adlyMansourBranch1,
-      adlyMansourBranch2,
-      capitalTrainLineBranch1,
-      capitalTrainLineBranch2
-    ];
+    final lines = [helwanLine, elmounibLine, adlyMansourBranch1, adlyMansourBranch2, capitalTrainLineBranch1, capitalTrainLineBranch2];
     List<List<Station>> path = [];
     final firstlineNumber = stations.firstWhere((station) => station.name == currentStation).lineNumber +
         (stations.firstWhere((station) => station.name == currentStation).branch ?? 0);
@@ -371,16 +383,12 @@ class _RoutePageState extends State<RoutePage> {
       }
       String? current = targetedStation;
       List<Station> temp = [];
-      List<String> transferStations = Get.locale?.languageCode == 'ar'
-          ? ["الشهداء", "السادات", "جمال عبد الناصر", "العتبة", "جامعة القاهرة", "عدلي منصور"]
-          : ["Shohadaa", "Sadat", "Gamal Abdel Nasser", "Attaba", "Cairo University", "Adly Mansour"];
       while (current != null) {
         temp.insert(0, stations.firstWhere((st) => st.name == current));
         final lineN = stations.firstWhere((st) => st.name == current).lineNumber;
         current = previous[current];
         if (current != null && previous[current] != null) {
-          if (transferStations.contains(current) &&
-              lineN != stations.firstWhere((st) => st.name == previous[current]).lineNumber) {
+          if (transferStations.contains(current) && lineN != stations.firstWhere((st) => st.name == previous[current]).lineNumber) {
             path.insert(0, temp.toList());
             temp.clear();
           }
