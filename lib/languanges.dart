@@ -26,7 +26,7 @@ class Languages extends Translations {
           "exchangeStation": "من @station هتحول @secondLineNumber اتجاه @direction",
           "expectedTime": "الوقت المتوقع:\n@timeد",
           "nearestStation": "ايه أقرب محطة ليا؟",
-          "homePage": "الصفحة الرئيسيى",
+          "homePage": "الصفحة الرئيسية",
           "history": "سجل الرحلات",
           "favorites": "رحلاتي المفضلة",
           "settings": "الإعدادات",

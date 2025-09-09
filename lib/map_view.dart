@@ -7,16 +7,11 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('map'.tr),
-      ),
-      body: PhotoView(
-        imageProvider: const AssetImage('assets/images/metroMap.webp'),
-        filterQuality: FilterQuality.high,
-        minScale: PhotoViewComputedScale.contained,
-        maxScale: PhotoViewComputedScale.covered * 5,
-      ),
+    return PhotoView(
+      imageProvider: const AssetImage('assets/images/metroMap.webp'),
+      filterQuality: FilterQuality.high,
+      minScale: PhotoViewComputedScale.contained,
+      maxScale: PhotoViewComputedScale.covered * 5,
     );
   }
 }

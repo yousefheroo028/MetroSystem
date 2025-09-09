@@ -34,7 +34,7 @@ class Entry extends StatelessWidget {
             color: Colors.white,
           ),
           iconTheme: const IconThemeData(color: Colors.white),
-          elevation: 4,
+          elevation: 0,
           centerTitle: true,
         ),
         textTheme: TextTheme(
@@ -63,7 +63,7 @@ class Entry extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          elevation: 6,
+          elevation: 0,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
@@ -73,7 +73,7 @@ class Entry extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            elevation: 3,
+            elevation: 0,
           ),
         ),
       ),
@@ -92,7 +92,7 @@ class Entry extends StatelessWidget {
             color: Colors.white,
           ),
           iconTheme: const IconThemeData(color: Colors.white),
-          elevation: 4,
+          elevation: 0,
           centerTitle: true,
         ),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -101,7 +101,7 @@ class Entry extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          elevation: 6,
+          elevation: 0,
         ),
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
@@ -122,7 +122,7 @@ class Entry extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            elevation: 3,
+            elevation: 0,
           ),
         ),
       ),
