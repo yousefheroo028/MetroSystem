@@ -29,7 +29,7 @@ class Entry extends StatelessWidget {
           backgroundColor: const Color(0xFFD9534F),
           foregroundColor: Colors.white,
           titleTextStyle: GoogleFonts.oswald(
-            fontSize: 22,
+            fontSize: 30,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
