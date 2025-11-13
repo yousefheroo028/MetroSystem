@@ -20,13 +20,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _fromController = TextEditingController();
+  final TextEditingController _fromController = TextEditingController();
 
-  final _toController = TextEditingController();
+  final TextEditingController _toController = TextEditingController();
 
-  final _targetedAddressController = TextEditingController();
+  final TextEditingController _targetedAddressController = TextEditingController();
 
-  final _controller = Get.put(HomeController());
+  final HomeController _controller = Get.put(HomeController());
 
   @override
   void dispose() {
@@ -37,36 +37,34 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  final _pageIndex = 0.obs;
+  final RxInt _pageIndex = 0.obs;
 
-  final _stationsList = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations)
-      .map((station) => station.name)
-      .toSet()
-      .map((station) => DropdownMenuEntry(value: station, label: station))
-      .toList();
-  final _isDarkMode = Get.isDarkMode.obs;
+  final RxBool isDark = Get.isDarkMode.obs;
+
   @override
   Widget build(BuildContext context) {
+    final List<DropdownMenuEntry<String>> stationsList = (Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations)
+        .map((Station station) => station.name)
+        .toSet()
+        .map((String station) => DropdownMenuEntry<String>(value: station, label: station))
+        .toList();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: Obx(
-          () {
-            return IconButton(
-              onPressed: () {
-                Get.changeThemeMode(_isDarkMode.value ? ThemeMode.light : ThemeMode.dark);
-                _isDarkMode.value = !_isDarkMode.value;
-              },
-              icon: _isDarkMode.value ? const Icon(Icons.light_mode) : const Icon(Icons.dark_mode),
-            );
+        leading: IconButton(
+          onPressed: () {
+            Get.changeThemeMode(isDark.value ? ThemeMode.light : ThemeMode.dark);
+            isDark.value = !isDark.value;
           },
+          icon: Obx(() => isDark.value ? const Icon(Icons.light_mode) : const Icon(Icons.dark_mode)),
         ),
         title: Text('appTitle'.tr, style: const TextStyle(fontSize: 20)),
-        actions: [
+        actions: <Widget>[
           IconButton(
             onPressed: () async {
-              final arabicNamesOfStations = ar_list.stations.map((station) => station.name).toSet().toList();
-              final englishNamesOfStations = en_list.stations.map((station) => station.name).toSet().toList();
+              final List<String> arabicNamesOfStations = ar_list.stations.map((Station station) => station.name).toSet().toList();
+              final List<String> englishNamesOfStations =
+                  en_list.stations.map((Station station) => station.name).toSet().toList();
               (Get.locale?.languageCode == 'ar')
                   ? await Get.updateLocale(const Locale('en', 'US'))
                   : await Get.updateLocale(const Locale('ar', 'AA'));
@@ -85,25 +83,32 @@ class _HomePageState extends State<HomePage> {
       body: Obx(
         () => IndexedStack(
           index: _pageIndex.value,
-          children: [
+          children: <Widget>[
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Column(
                   spacing: 8.0,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    DropdownMenu(
+                  children: <Widget>[
+                    DropdownMenu<String>(
                       hintText: 'currentStation'.tr,
                       menuHeight: 300.0,
-                      dropdownMenuEntries: _stationsList,
-                      width: context.width,
+                      dropdownMenuEntries: stationsList,
+                      width: context.width - 32.0,
+                      menuStyle: MenuStyle(
+                        elevation: WidgetStateProperty.all(0),
+                        padding: const WidgetStatePropertyAll<EdgeInsetsGeometry?>(
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                        ),
+                      ),
                       controller: _fromController,
                       enableSearch: true,
+                      alignmentOffset: const Offset(0.0, 8.0),
                       enableFilter: true,
                       requestFocusOnTap: true,
                       leadingIcon: const Icon(Icons.train_outlined),
-                      onSelected: (value) {
+                      onSelected: (String? value) {
                         _fromController.text = value!;
                         _controller.fromIsEntered.value = true;
                       },
@@ -111,7 +116,7 @@ class _HomePageState extends State<HomePage> {
                     Obx(
                       () => Row(
                         spacing: 8.0,
-                        children: [
+                        children: <Widget>[
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: _controller.isFound.value
@@ -130,7 +135,9 @@ class _HomePageState extends State<HomePage> {
                               icon: _controller.isFound.value
                                   ? LoadingAnimationWidget.waveDots(color: Theme.of(context).primaryColorLight, size: 24.0)
                                   : const Icon(Icons.location_on_outlined),
-                              style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                              style: const ButtonStyle(
+                                padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(EdgeInsetsGeometry.all(8.0)),
+                              ),
                               label: Text('nearestStation'.tr),
                             ),
                           ),
@@ -142,14 +149,16 @@ class _HomePageState extends State<HomePage> {
                                       await launchUrl(
                                         Uri(
                                           scheme: 'google.navigation',
-                                          queryParameters: {
+                                          queryParameters: <String, dynamic>{
                                             'q':
-                                                '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}'
+                                                '${_controller.nearestStation!.latitude}, ${_controller.nearestStation!.longitude}',
                                           },
                                         ),
                                       );
                                     },
-                              style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                              style: const ButtonStyle(
+                                padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(EdgeInsetsGeometry.all(8.0)),
+                              ),
                               icon: const Icon(Icons.map),
                               label: Text('locationOfStation'.tr),
                             ),
@@ -157,17 +166,24 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    DropdownMenu(
+                    DropdownMenu<String>(
                       hintText: 'targetedStation'.tr,
-                      width: context.width,
+                      width: context.width - 32.0,
                       menuHeight: 300.0,
-                      dropdownMenuEntries: _stationsList,
+                      menuStyle: MenuStyle(
+                        elevation: WidgetStateProperty.all(0),
+                        padding: const WidgetStatePropertyAll<EdgeInsetsGeometry?>(
+                          EdgeInsets.symmetric(vertical: 0.0, horizontal: 8.0),
+                        ),
+                      ),
+                      dropdownMenuEntries: stationsList,
+                      alignmentOffset: const Offset(0.0, 8.0),
                       controller: _toController,
                       enableSearch: true,
                       leadingIcon: const Icon(Icons.train_outlined),
                       enableFilter: true,
                       requestFocusOnTap: true,
-                      onSelected: (value) {
+                      onSelected: (String? value) {
                         _toController.text = value!;
                         _controller.toIsEntered.value = true;
                       },
@@ -178,29 +194,30 @@ class _HomePageState extends State<HomePage> {
                             ? () => _fromController.text != _toController.text
                                 ? Get.to(
                                     () => const RoutePage(),
-                                    arguments: [_fromController.text, _toController.text],
+                                    arguments: <String>[_fromController.text, _toController.text],
                                     transition: Transition.cupertino,
                                   )
                                 : Get.snackbar(
                                     'sameStations'.tr,
-                                    'You\'re Already in'.trParams({"station": _fromController.text}),
+                                    'You\'re Already in'.trParams(<String, String>{"station": _fromController.text}),
                                   )
                             : null,
                         child: Text('findRoute'.tr),
                       ),
                     ),
                     Row(
-                      children: [
+                      children: <Widget>[
                         Obx(
                           () {
                             return IconButton(
-                                onPressed: _controller.targetedIsEntered.value
-                                    ? () {
-                                        _targetedAddressController.text = '';
-                                        _controller.targetedIsEntered.value = false;
-                                      }
-                                    : null,
-                                icon: const Icon(Icons.delete_outline));
+                              onPressed: _controller.targetedIsEntered.value
+                                  ? () {
+                                      _targetedAddressController.text = '';
+                                      _controller.targetedIsEntered.value = false;
+                                    }
+                                  : null,
+                              icon: const Icon(Icons.delete_outline),
+                            );
                           },
                         ),
                         Expanded(
@@ -209,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                             decoration: InputDecoration(
                               hintText: 'addressHint'.tr,
                             ),
-                            onChanged: (value) {
+                            onChanged: (String value) {
                               _controller.targetedIsEntered.value = _targetedAddressController.text.isNotEmpty;
                             },
                           ),
@@ -219,40 +236,46 @@ class _HomePageState extends State<HomePage> {
                     Obx(
                       () => Row(
                         spacing: 8.0,
-                        children: [
+                        children: <Widget>[
                           Expanded(
                             flex: 10,
                             child: ElevatedButton.icon(
                               onPressed: _controller.targetedIsEntered.value
                                   ? () async {
-                                      final locations = await locationFromAddress(_targetedAddressController.text);
-                                      final targetedAddress = calculatenearestStation(locations[0]);
+                                      final List<Location> locations = await locationFromAddress(_targetedAddressController.text);
+                                      final Station targetedAddress = calculatenearestStation(locations[0]);
                                       _toController.text = targetedAddress.name;
                                       _controller.toIsEntered.value = _toController.text.isNotEmpty;
                                     }
                                   : null,
-                              style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                              style: const ButtonStyle(
+                                padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(EdgeInsetsGeometry.all(8.0)),
+                              ),
                               label: Text('nearestStationForAddress'.tr),
                             ),
                           ),
                           Expanded(
-                            flex: 9,
+                            flex: 8,
                             child: ElevatedButton.icon(
                               onPressed: !_controller.targetedIsEntered.value
                                   ? null
                                   : () async {
-                                      final locations = await locationFromAddress(_targetedAddressController.text);
+                                      final List<Location> locations = await locationFromAddress(_targetedAddressController.text);
                                       await launchUrl(
                                         Uri(
                                           scheme: 'google.navigation',
-                                          queryParameters: {'q': '${locations[0].latitude}, ${locations[0].longitude}'},
+                                          queryParameters: <String, String>{
+                                            'q': '${locations[0].latitude}, ${locations[0].longitude}',
+                                          },
                                         ),
                                       );
                                     },
-                              style: const ButtonStyle(padding: WidgetStatePropertyAll(EdgeInsetsGeometry.all(8.0))),
+                              style: const ButtonStyle(
+                                padding: WidgetStatePropertyAll<EdgeInsetsGeometry?>(EdgeInsetsGeometry.all(8.0)),
+                              ),
                               label: Text('locationOfAddress'.tr),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -266,13 +289,13 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
-          items: [
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: const Icon(Icons.home), label: 'homePage'.tr),
             BottomNavigationBarItem(icon: const Icon(Icons.map), label: 'map'.tr),
           ],
           elevation: 0,
           currentIndex: _pageIndex.value,
-          onTap: (value) => _pageIndex.value = value,
+          onTap: (int value) => _pageIndex.value = value,
         ),
       ),
     );
@@ -280,10 +303,10 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomeController extends GetxController {
-  var isFound = false.obs;
-  var fromIsEntered = false.obs;
-  var toIsEntered = false.obs;
-  var targetedIsEntered = false.obs;
+  RxBool isFound = false.obs;
+  RxBool fromIsEntered = false.obs;
+  RxBool toIsEntered = false.obs;
+  RxBool targetedIsEntered = false.obs;
 
   Station? nearestStation;
 }
@@ -294,7 +317,7 @@ Future<Station> _findNearestStation(BuildContext context) async {
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    return Future.error('locationDisabled'.tr);
+    return Future<Station>.error('locationDisabled'.tr);
   }
 
   permission = await Geolocator.checkPermission();
@@ -302,28 +325,26 @@ Future<Station> _findNearestStation(BuildContext context) async {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
       Get.snackbar('locationDeniedTitle'.tr, 'locationDeniedMessage'.tr);
-      return Future.error('permissionsDisabled'.tr);
+      return Future<Station>.error('permissionsDisabled'.tr);
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    return Future.error('permanentlyDenied'.tr);
+    return Future<Station>.error('permanentlyDenied'.tr);
   }
-
-  if (!serviceEnabled) {}
 
   return calculatenearestStation(await Geolocator.getCurrentPosition());
 }
 
 double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-  const earthRadiusKm = 6371.0;
+  const double earthRadiusKm = 6371.0;
 
-  final dLat = _toRadians(lat2 - lat1);
-  final dLon = _toRadians(lon2 - lon1);
+  final double dLat = _toRadians(lat2 - lat1);
+  final double dLon = _toRadians(lon2 - lon1);
 
-  final a = sin(dLat / 2) * sin(dLat / 2) + cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+  final double a = sin(dLat / 2) * sin(dLat / 2) + cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * sin(dLon / 2) * sin(dLon / 2);
 
-  final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
   return earthRadiusKm * c;
 }
@@ -332,13 +353,13 @@ double _toRadians(double degree) {
   return degree * pi / 180;
 }
 
-Station calculatenearestStation(location) {
-  final stationList = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
-  var minDistance = double.infinity;
+Station calculatenearestStation(dynamic location) {
+  final List<Station> stationList = Get.locale?.languageCode == 'ar' ? ar_list.stations : en_list.stations;
+  double minDistance = double.infinity;
 
-  var nearestStation = stationList.first;
-  for (var st in stationList) {
-    final distance = _calculateDistance(st.latitude, st.longitude, location.latitude, location.longitude);
+  Station nearestStation = stationList.first;
+  for (final Station st in stationList) {
+    final double distance = _calculateDistance(st.latitude, st.longitude, location.latitude, location.longitude);
     if (distance < minDistance) {
       minDistance = distance;
       nearestStation = st;

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:metro_system/languanges.dart';
 
 import 'home_page.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
   runApp(const Entry());
 }
 
@@ -20,31 +18,19 @@ class Entry extends StatelessWidget {
       locale: const Locale('ar', 'AE'),
       fallbackLocale: const Locale('en', 'US'),
       theme: ThemeData(
+        fontFamilyFallback: const <String>['Tajawal'],
+        fontFamily: 'Tajawal',
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFD9534F), // أحمر أهدى
           brightness: Brightness.light,
         ),
         scaffoldBackgroundColor: const Color(0xFFF5F5F5), // خلفية فاتحة وناعمة
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFFD9534F),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFFD9534F),
           foregroundColor: Colors.white,
-          titleTextStyle: GoogleFonts.oswald(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.white),
           elevation: 0,
           centerTitle: true,
-        ),
-        textTheme: TextTheme(
-          titleLarge: GoogleFonts.oswald(
-            fontSize: 30,
-            fontStyle: FontStyle.italic,
-            color: const Color(0xFF3A3A3A), // رمادي داكن للنصوص
-          ),
-          bodyMedium: GoogleFonts.merriweather(color: const Color(0xFF3A3A3A)),
-          displaySmall: GoogleFonts.pacifico(color: const Color(0xFFD9534F)),
         ),
         dropdownMenuTheme: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
@@ -78,20 +64,17 @@ class Entry extends StatelessWidget {
         ),
       ),
       darkTheme: ThemeData(
+        fontFamilyFallback: const <String>['Tajawal'],
+        fontFamily: 'Tajawal',
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFFD9534F),
           brightness: Brightness.dark,
         ),
         scaffoldBackgroundColor: const Color(0xFF1C1C1C),
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFF3A3A3A),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF3A3A3A),
           foregroundColor: Colors.white,
-          titleTextStyle: GoogleFonts.oswald(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.white),
           elevation: 0,
           centerTitle: true,
         ),

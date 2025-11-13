@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 
 class Languages extends Translations {
   @override
-  Map<String, Map<String, String>> get keys => {
-        'ar_AE': {
+  Map<String, Map<String, String>> get keys => <String, Map<String, String>>{
+        'ar_AE': <String, String>{
           "appTitle": "برنامج مترو القاهرة",
           "line": "الخط",
           "currentStation": "المحطة اللي هتحرك منها",
@@ -25,7 +25,7 @@ class Languages extends Translations {
           "Station": "محطة",
           "exchangeStation": "من @station هتحول @secondLineNumber اتجاه @direction",
           "expectedTime": "الوقت المتوقع:\n@timeد",
-          "nearestStation": "ايه أقرب محطة ليا؟",
+          "nearestStation": "أقرب محطة",
           "homePage": "الصفحة الرئيسية",
           "history": "سجل الرحلات",
           "favorites": "رحلاتي المفضلة",
@@ -34,13 +34,13 @@ class Languages extends Translations {
           "about": "عن البرنامج",
           "locationOfStation": "ازاي أروح للمحطة دي؟",
           "locationOfAddress": "ازاي أروح للعنوان دا؟",
-          "nearestStationForAddress": "ايه أقرب محطة للعنوان دا؟",
+          "nearestStationForAddress": "أقرب محطة للعنوان",
           "routeLine": "خط السير",
           "noOfStations": "عدد المحطات:\n@stations @number",
           "Price": "سعر تذكرة @line:\n@price @currency",
-          "startOfRoute": "هتركب محطة @station اتجاه @direction"
+          "startOfRoute": "هتركب محطة @station اتجاه @direction",
         },
-        'en_US': {
+        'en_US': <String, String>{
           "nearestStation": "Nearest Station",
           "locationOfStation": "Route to Station",
           "locationOfAddress": "Route to Address",
@@ -76,7 +76,7 @@ class Languages extends Translations {
           "noOfStations": "Number of Stations:\n@stations @number",
           "Price": "Price of @line Ticket:\n@price @currency",
           "startOfRoute": "You will Start at @station Station @direction Direction",
-          "routeCompleted": "You Reached Your Destination"
+          "routeCompleted": "You Reached Your Destination",
         },
       };
 }
